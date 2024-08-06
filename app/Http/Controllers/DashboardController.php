@@ -23,6 +23,7 @@ use App\Models\ProductCategory;
 use App\Models\Suggest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Models\User;
@@ -548,7 +549,7 @@ class DashboardController extends Controller
 
     public function stats(Request $request)
     {
-        $livret = auth()->user()->livret;
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
 
         if(!$livret){
             return response()->json(['error' => 'Livret introuvable']);
@@ -568,8 +569,30 @@ class DashboardController extends Controller
             ->whereBetween('viewed_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->count();
 
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
+
+        return response()->json([
+            'totalViews' => $totalViews,
+            'viewsThisWeek' => $viewsThisWeek,
+            'viewsToday' => $viewsToday,
+            'viewsThisMonth' => $viewsThisMonth,
+        ]);
+    }
+
+    public function statsBetweenDates(Request $request)
+    {
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
+
+        $validatedData = $request->validate([
+            'start_date' => 'required|string',
+            'end_date' => 'required|string',
+        ]);
+
+        if(!$livret){
+            return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        $startDate = $validatedData['start_date'];
+        $endDate = $validatedData['end_date'];
 
         $viewsBetweenDates = null;
         if ($startDate && $endDate) {
@@ -580,10 +603,6 @@ class DashboardController extends Controller
         }
 
         return response()->json([
-            'totalViews' => $totalViews,
-            'viewsThisWeek' => $viewsThisWeek,
-            'viewsToday' => $viewsToday,
-            'viewsThisMonth' => $viewsThisMonth,
             'startDate' => $startDate,
             'endDate' => $endDate,
             'viewsBetweenDates' => $viewsBetweenDates,

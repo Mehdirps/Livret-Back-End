@@ -55,6 +55,7 @@ Route::middleware('api')->group(function () {
         Route::get('background/{id}', [App\Http\Controllers\DashboardController::class, 'updateBackground'])->name('dashboard.background.update');
         Route::get('edit_livret', [App\Http\Controllers\DashboardController::class, 'editLivret'])->name('dashboard.edit_livret');
         Route::get('stats', [App\Http\Controllers\DashboardController::class, 'stats'])->name('dashboard.stats');
+        Route::post('statsBetweenDates', [App\Http\Controllers\DashboardController::class, 'statsBetweenDates'])->name('dashboard.statsBetweenDates');
         /* Livret Module */
         /* Wifi */
         Route::post('module/wifi', [App\Http\Controllers\DashboardController::class, 'addModuleWifi'])->name('dashboard.module.wifi');
