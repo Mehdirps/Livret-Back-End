@@ -137,7 +137,7 @@ class DashboardController extends Controller
             'password_confirmation' => 'required|same:password',
         ]);
 
-/*        $validatedData = $validator->validated();*/
+        /*        $validatedData = $validator->validated();*/
 
         $user = JWTAuth::parseToken()->authenticate();
 
@@ -469,7 +469,7 @@ class DashboardController extends Controller
             $livret = auth()->user()->livret;
         }
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
@@ -551,7 +551,7 @@ class DashboardController extends Controller
     {
         $livret = JWTAuth::parseToken()->authenticate()->livret;
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
@@ -587,7 +587,7 @@ class DashboardController extends Controller
             'end_date' => 'required|string',
         ]);
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
@@ -617,7 +617,7 @@ class DashboardController extends Controller
             $livret = auth()->user()->livret;
         }
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
@@ -637,7 +637,7 @@ class DashboardController extends Controller
     {
         $placeGroup = PlaceGroup::find($id);
 
-        if(!$placeGroup){
+        if (!$placeGroup) {
             return response()->json(['error' => 'Module introuvable']);
         }
 
@@ -658,7 +658,7 @@ class DashboardController extends Controller
             $livret = auth()->user()->livret;
         }
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
@@ -683,7 +683,7 @@ class DashboardController extends Controller
     {
         $nearbyPlace = NearbyPlace::find($id);
 
-        if(!$nearbyPlace){
+        if (!$nearbyPlace) {
             return response()->json(['error' => 'Module introuvable']);
         }
 
@@ -752,14 +752,14 @@ class DashboardController extends Controller
     {
         $livret = auth()->user()->livret;
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
         $inventories = Inventory::where('livret_id', $livret->id)->paginate(15);
 
 
-        if(!$inventories){
+        if (!$inventories) {
             return response()->json(['error' => 'Aucun inventaire trouvé']);
         }
 
@@ -831,7 +831,7 @@ class DashboardController extends Controller
     {
         $inventory = Inventory::find($id);
 
-        if(!$inventory){
+        if (!$inventory) {
             return response()->json(['error' => 'Inventaire introuvable']);
         }
 
@@ -898,18 +898,17 @@ class DashboardController extends Controller
     {
         $livret = auth()->user()->livret;
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
-        $suggestions = $livret->suggestions()->paginate(15);
+        $suggestions = $livret->suggestions()->get();
 
-        if(!$suggestions){
+        if (!$suggestions) {
             return response()->json(['error' => 'Aucune suggestion trouvée']);
         }
 
         return response()->json([
-            'livret' => $livret,
             'suggestions' => $suggestions,
         ]);
     }
@@ -920,18 +919,18 @@ class DashboardController extends Controller
         $livret->suggest = !$livret->suggest;
         $livret->save();
 
-        return response()->json(['success' => 'Les suggestions ont été activées avec succès']);
+        return response()->json(['success' => 'Les suggestions ont été activées avec succès', 'livret' => $livret]);
     }
 
     public function statusSuggestion(Request $request)
     {
-        /*$request->validate([
-            'status' => 'required|string',
+        $validatedData = $request->validate([
+            'status_suggest' => 'required|string|in:pending,accepted,refused',
             'suggestion_id' => 'required|integer',
-        ]);*/
+        ]);
 
-        $suggestion = Suggest::find($request->suggestion_id);
-        $suggestion->status = $request->status_suggest;
+        $suggestion = Suggest::find($validatedData['suggestion_id']);
+        $suggestion->status = $validatedData['status_suggest'];
         $suggestion->save();
 
         return response()->json(['success' => 'Le status de la suggestion a été mis à jour avec succès']);
@@ -948,7 +947,7 @@ class DashboardController extends Controller
             'status' => 'nullable|string|in:all,pending,accepted,refused',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
         }
 
@@ -993,7 +992,7 @@ class DashboardController extends Controller
         $categories = ProductCategory::all();
         $products = Product::paginate(15);
 
-        if(!$products){
+        if (!$products) {
             return response()->json(['error' => 'Aucun produit trouvé']);
         }
 
@@ -1075,7 +1074,7 @@ class DashboardController extends Controller
     {
         $livret = auth()->user()->livret;
 
-        if(!$livret){
+        if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
