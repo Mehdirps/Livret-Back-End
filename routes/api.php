@@ -109,7 +109,7 @@ Route::middleware('api')->group(function () {
         Route::get('suggestions', [App\Http\Controllers\DashboardController::class, 'suggestions'])->name('dashboard.suggestions');
         Route::get('suggestion/enable/{id}', [App\Http\Controllers\DashboardController::class, 'enableSuggestion'])->name('dashboard.suggestion.enable');
         Route::post('suggestion/status', [App\Http\Controllers\DashboardController::class, 'statusSuggestion'])->name('dashboard.suggestion.status');
-        Route::post('dashboard.suggestion.search', [App\Http\Controllers\DashboardController::class, 'searchSuggestions'])->name('dashboard.suggestion.search');
+        Route::post('suggestion/search', [App\Http\Controllers\DashboardController::class, 'searchSuggestions'])->name('dashboard.suggestion.search');
 
         /* Products */
         Route::get('products', [App\Http\Controllers\DashboardController::class, 'products'])->name('dashboard.products');
