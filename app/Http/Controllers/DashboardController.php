@@ -947,15 +947,13 @@ class DashboardController extends Controller
             'status' => 'nullable|string|in:all,pending,accepted,refused',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
-        }
+        $validatedData = $validator;
 
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $title = $request->input('title');
-        $message = $request->input('message');
-        $status = $request->input('status');
+        $name = $validatedData['name'];
+        $email = $validatedData['email'];
+        $title = $validatedData['title'];
+        $message = $validatedData['message'];
+        $status = $validatedData['status'];
 
         $query = Suggest::query();
 
@@ -979,10 +977,10 @@ class DashboardController extends Controller
             $query->where('status', $status);
         }
 
-        $suggestions = $query->paginate(15);
+        $suggestions = $query->get();
 
         return response()->json([
-            'livret' => auth()->user()->livret,
+            /*'livret' => JWTAuth::parseToken()->authenticate()->livret,*/
             'suggestions' => $suggestions,
         ]);
     }
