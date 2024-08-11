@@ -269,10 +269,10 @@ class DashboardController extends Controller
         $wifi->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Votre réseau wifi a été mis à jour avec succès']);
+            return response()->json(['message' => 'Votre réseau wifi a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre réseau wifi a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre réseau wifi a été mis à jour avec succès']);
     }
 
     public function deleteModuleWifi($id)
@@ -286,10 +286,10 @@ class DashboardController extends Controller
         $wifi->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Votre réseau wifi a été supprimé avec succès']);
+            return response()->json(['message' => 'Votre réseau wifi a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre réseau wifi a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre réseau wifi a été supprimé avec succès']);
     }
 
     public function addModuleDigicode(Request $request)
@@ -311,10 +311,10 @@ class DashboardController extends Controller
         $digicode->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le digicode a été mis à jour avec succès']);
+            return response()->json(['message' => 'Le digicode a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre digicode a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre digicode a été mis à jour avec succès']);
     }
 
     public function deleteModuleDigicode($id)
@@ -328,10 +328,10 @@ class DashboardController extends Controller
         $digicode->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le digicode a été supprimé avec succès']);
+            return response()->json(['message' => 'Le digicode a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre digicode a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre digicode a été supprimé avec succès']);
     }
 
     public function addModuleUtilsPhone(Request $request)
@@ -353,10 +353,10 @@ class DashboardController extends Controller
         $utilsPhone->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le numéro utile a été mis à jour avec succès']);
+            return response()->json(['message' => 'Le numéro utile a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre numéro de téléphone a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre numéro de téléphone a été mis à jour avec succès']);
     }
 
     public function deleteModuleUtilsPhone($id)
@@ -370,10 +370,10 @@ class DashboardController extends Controller
         $utilsPhone->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le numéro utile a été supprimé avec succès']);
+            return response()->json(['message' => 'Le numéro utile a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre numéro de téléphone a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre numéro de téléphone a été supprimé avec succès']);
     }
 
     public function addModuleUtilsInfos(Request $request)
@@ -396,10 +396,10 @@ class DashboardController extends Controller
         $utilsInfos->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info utile a été mis à jour avec succès']);
+            return response()->json(['message' => 'L\'info utile a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information pratique a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre information pratique a été mis à jour avec succès']);
     }
 
     public function deleteModuleUtilsInfos($id)
@@ -413,10 +413,10 @@ class DashboardController extends Controller
         $utilsInfos->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info utile a été supprimé avec succès']);
+            return response()->json(['message' => 'L\'info utile a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information pratique a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre information pratique a été supprimé avec succès']);
     }
 
     public function addModuleStartInfo(Request $request)
@@ -438,10 +438,10 @@ class DashboardController extends Controller
         $startInfo->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info d\'arrivé a été mis à jour avec succès']);
+            return response()->json(['message' => 'L\'info d\'arrivé a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information d\'arrivée a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre information d\'arrivée a été mis à jour avec succès']);
     }
 
     public function deleteModuleStartInfo($id)
@@ -455,10 +455,10 @@ class DashboardController extends Controller
         $startInfo->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info d\'arrivé a été supprimé avec succès']);
+            return response()->json(['message' => 'L\'info d\'arrivé a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information d\'arrivée a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre information d\'arrivée a été supprimé avec succès']);
     }
 
     public function addModuleEndInfo(Request $request)
@@ -480,10 +480,10 @@ class DashboardController extends Controller
         $startInfo->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info de départ a été mis à jour avec succès']);
+            return response()->json(['message' => 'L\'info de départ a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information de départ a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre information de départ a été mis à jour avec succès']);
     }
 
     public function deleteModuleEndInfo($id)
@@ -497,10 +497,10 @@ class DashboardController extends Controller
         $startInfo->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info de départ a été supprimé avec succès']);
+            return response()->json(['message' => 'L\'info de départ a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information de départ a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre information de départ a été supprimé avec succès']);
     }
 
     public function addModuleHomeInfos(Request $request)
@@ -529,10 +529,10 @@ class DashboardController extends Controller
         }
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'L\'info de départ a été mis à jour avec succès']);
+            return response()->json(['message' => 'L\'info de départ a été mis à jour avec succès']);
         }
 
-        return response()->json(['success' => 'Votre information de départ a été mis à jour avec succès']);
+        return response()->json(['message' => 'Votre information de départ a été mis à jour avec succès']);
     }
 
     /*   public function deleteModuleHomeInfos($id)
@@ -627,10 +627,10 @@ class DashboardController extends Controller
         $placeGroup->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le groupe de lieu a été ajouté avec succès']);
+            return response()->json(['message' => 'Le groupe de lieu a été ajouté avec succès']);
         }
 
-        return response()->json(['success' => 'Votre groupe a été ajouté avec succès']);
+        return response()->json(['message' => 'Votre groupe a été ajouté avec succès']);
     }
 
     public function deleteModulePlacesGroups($id)
@@ -644,10 +644,10 @@ class DashboardController extends Controller
         $placeGroup->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le groupe de lieu a été supprimé avec succès']);
+            return response()->json(['message' => 'Le groupe de lieu a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre groupe a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre groupe a été supprimé avec succès']);
     }
 
     public function addModuleNearbyPlaces(Request $request)
@@ -673,10 +673,10 @@ class DashboardController extends Controller
         $nearbyPlace->save();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le lieu a été ajouté avec succès']);
+            return response()->json(['message' => 'Le lieu a été ajouté avec succès']);
         }
 
-        return response()->json(['success' => 'Votre lieu a été ajouté avec succès']);
+        return response()->json(['message' => 'Votre lieu a été ajouté avec succès']);
     }
 
     public function deleteModuleNearbyPlaces($id)
@@ -690,10 +690,10 @@ class DashboardController extends Controller
         $nearbyPlace->delete();
 
         if (auth()->user()->role == 'admin') {
-            return response()->json(['success' => 'Le lieu a été supprimé avec succès']);
+            return response()->json(['message' => 'Le lieu a été supprimé avec succès']);
         }
 
-        return response()->json(['success' => 'Votre lieu a été supprimé avec succès']);
+        return response()->json(['message' => 'Votre lieu a été supprimé avec succès']);
     }
 
     public function contactSupport(Request $request)
@@ -741,7 +741,7 @@ class DashboardController extends Controller
 
             $mail->send();
 
-            return response()->json(['success' => 'Votre demande de support a été envoyée avec succès']);
+            return response()->json(['message' => 'Votre demande de support a été envoyée avec succès']);
         } catch (Exception $e) {
             return response()->json(['error' => 'Une erreur est survenue lors de l\'envoi de votre demande']);
         }
@@ -805,25 +805,22 @@ class DashboardController extends Controller
 
         $inventory->save();
 
-        return response()->json(['success' => 'L\'état des lieux a été ajouté avec succès']);
+        return response()->json(['message' => 'L\'état des lieux a été ajouté avec succès']);
     }
 
     public function statusInventory(Request $request)
     {
-        $validator = $request->validate([
+        $validatedData = $request->validate([
             'status' => 'required|string',
             'inventory_id' => 'required|integer',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
-        }
 
-        $inventory = Inventory::find($request->inventory_id);
-        $inventory->status = $request->status;
+        $inventory = Inventory::find($validatedData['inventory_id']);
+        $inventory->status = $validatedData['status'];
         $inventory->save();
 
-        return response()->json(['success' => 'Le status de l\'état des lieux a été mis à jour avec succès']);
+        return response()->json(['message' => 'Le status de l\'état des lieux a été mis à jour avec succès']);
     }
 
     public function deleteInventory($id)
@@ -846,26 +843,23 @@ class DashboardController extends Controller
 
         $inventory->delete();
 
-        return response()->json(['success' => 'L\'état des lieux a été supprimé avec succès']);
+        return response()->json(['message' => 'L\'état des lieux a été supprimé avec succès']);
     }
 
     public function searchInventories(Request $request)
     {
-        $validator = $request->validate([
+        $validatedData = $request->validate([
             'client_name' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'status' => 'nullable|string|in:in_progress,completed',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
-        }
 
-        $client_name = $request->input('client_name');
-        $start_date = $request->input('start_date');
-        $end_date = $request->input('end_date');
-        $status = $request->input('status');
+        $client_name = $validatedData['client_name'];
+        $start_date = $validatedData['start_date'];
+        $end_date = $validatedData['end_date'];
+        $status = $validatedData['status'];
 
         $query = Inventory::query();
 
@@ -885,10 +879,9 @@ class DashboardController extends Controller
             $query->where('status', $status);
         }
 
-        $inventories = $query->paginate(15);
+        $inventories = $query->get();
 
         return response()->json([
-            'livret' => auth()->user()->livret,
             'inventories' => $inventories,
         ]);
     }
@@ -918,7 +911,7 @@ class DashboardController extends Controller
         $livret->suggest = !$livret->suggest;
         $livret->save();
 
-        return response()->json(['success' => 'Les suggestions ont été activées avec succès', 'livret' => $livret]);
+        return response()->json(['message' => 'Les suggestions ont été activées avec succès', 'livret' => $livret]);
     }
 
     public function statusSuggestion(Request $request)
@@ -932,7 +925,7 @@ class DashboardController extends Controller
         $suggestion->status = $validatedData['status_suggest'];
         $suggestion->save();
 
-        return response()->json(['success' => 'Le status de la suggestion a été mis à jour avec succès']);
+        return response()->json(['message' => 'Le status de la suggestion a été mis à jour avec succès']);
     }
 
     public function searchSuggestions(Request $request)
@@ -1080,7 +1073,7 @@ class DashboardController extends Controller
 
         $livret->save();
 
-        return response()->json(['success' => 'Le design du texte a été mis à jour avec succès']);
+        return response()->json(['message' => 'Le design du texte a été mis à jour avec succès']);
     }
 
     public function exportDatas(Request $request)
