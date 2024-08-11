@@ -96,11 +96,11 @@ Route::middleware('api')->group(function () {
         Route::post('/update-order', [App\Http\Controllers\DashboardController::class, 'updateOrder'])->name('dashboard.update-order');
 
         /* Inventories */
-        Route::get('/inventories', [App\Http\Controllers\DashboardController::class, 'inventories'])->name('dashboard.inventories');
-        Route::post('/inventories', [App\Http\Controllers\DashboardController::class, 'addInventory'])->name('dashboard.inventories.add');
-        Route::post('/inventories/update', [App\Http\Controllers\DashboardController::class, 'statusInventory'])->name('dashboard.inventories.status');
-        Route::delete('/inventories/{id}', [App\Http\Controllers\DashboardController::class, 'deleteInventory'])->name('dashboard.inventories.delete');
-        Route::post('dashboard.inventories.search', [App\Http\Controllers\DashboardController::class, 'searchInventories'])->name('dashboard.inventories.search');
+        Route::get('inventories', [App\Http\Controllers\DashboardController::class, 'inventories'])->name('dashboard.inventories');
+        Route::post('inventories', [App\Http\Controllers\DashboardController::class, 'addInventory'])->name('dashboard.inventories.add');
+        Route::post('inventories/update', [App\Http\Controllers\DashboardController::class, 'statusInventory'])->name('dashboard.inventories.status');
+        Route::delete('inventories/{id}', [App\Http\Controllers\DashboardController::class, 'deleteInventory'])->name('dashboard.inventories.delete');
+        Route::post('inventories/search', [App\Http\Controllers\DashboardController::class, 'searchInventories'])->name('dashboard.inventories.search');
 
         /* Contact */
         Route::post('module/contact', [App\Http\Controllers\DashboardController::class, 'contactSupport'])->name('dashboard.contact');
