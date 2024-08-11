@@ -750,13 +750,13 @@ class DashboardController extends Controller
 
     public function inventories()
     {
-        $livret = auth()->user()->livret;
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
 
-        $inventories = Inventory::where('livret_id', $livret->id)->paginate(15);
+        $inventories = Inventory::where('livret_id', $livret->id)->get();
 
 
         if (!$inventories) {
@@ -764,7 +764,6 @@ class DashboardController extends Controller
         }
 
         return response()->json([
-            'livret' => $livret,
             'inventories' => $inventories,
         ]);
     }
