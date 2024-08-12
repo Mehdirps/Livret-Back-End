@@ -745,7 +745,6 @@ class DashboardController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => 'Une erreur est survenue lors de l\'envoi de votre demande']);
         }
-
     }
 
     public function inventories()
@@ -770,7 +769,7 @@ class DashboardController extends Controller
 
     public function addInventory(Request $request)
     {
-        $validator = $request->validate([
+        $validatedData = $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'client_name' => 'required|string',
@@ -779,29 +778,36 @@ class DashboardController extends Controller
             'attachment_names.*' => 'nullable|file|mimes:pdf,png,jpeg,webp,jpg',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
-        }
-
         $inventory = new Inventory;
-        $inventory->livret_id = auth()->user()->livret->id;
-        $inventory->start_date = $request->start_date;
-        $inventory->end_date = $request->end_date;
-        $inventory->client_name = $request->client_name;
-        $inventory->status = $request->status;
-        $inventory->client_comment = $request->client_comment;
+        $inventory->livret_id = JWTAuth::parseToken()->authenticate()->livret->id;
+        $inventory->start_date = $validatedData['start_date'];
+        $inventory->end_date = $validatedData['end_date'];
+        $inventory->client_name = $validatedData['client_name'];
+        $inventory->status = $validatedData['status'];
+        $inventory->client_comment = $validatedData['client_comment'];
 
         if ($request->hasFile('attachment_names')) {
+
+            $allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'pdf', 'xlsx', 'xls', 'doc', 'docx', 'odt', 'ods', 'ppt', 'pptx'];
+            $files = $request->file('attachment_names');
             $attachments = [];
             $i = 0;
-            foreach ($request->file('attachment_names') as $attachment) {
-                $filename = $i . time() . '.' . $attachment->getClientOriginalExtension();
-                $attachment->move(public_path('assets/uploads/inventory_attachments'), $filename);
-                $attachments[] = 'assets/uploads/inventory_attachments/' . $filename;
-                $i++;
+
+            foreach ($files as $attachment) {
+                $extension = $attachment->getClientOriginalExtension();
+                if (in_array(strtolower($extension), $allowedExtensions)) {
+                    $filename = $i . time() . '.' . $extension;
+                    $attachment->move(public_path('assets/uploads/inventory_attachments'), $filename);
+                    $attachments[] = 'assets/uploads/inventory_attachments/' . $filename;
+                    $i++;
+                } else {
+                    return back()->withErrors(['attachment_names' => 'Un des fichiers a une extension non autorisée.']);
+                }
             }
+
             $inventory->attachment_names = json_encode($attachments);
         }
+
 
         $inventory->save();
 
@@ -979,16 +985,14 @@ class DashboardController extends Controller
 
     public function products()
     {
-        $categories = ProductCategory::all();
-        $products = Product::paginate(15);
+        $categories = ProductCategory::with('products')->get();
 
-        if (!$products) {
+        if (!$categories) {
             return response()->json(['error' => 'Aucun produit trouvé']);
         }
 
         return response()->json([
             'categories' => $categories,
-            'products' => $products,
         ]);
     }
 
@@ -1097,5 +1101,4 @@ class DashboardController extends Controller
             'pdf_base64' => base64_encode($output)
         ]);
     }
-
 }
