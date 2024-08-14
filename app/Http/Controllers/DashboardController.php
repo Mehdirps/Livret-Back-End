@@ -801,7 +801,7 @@ class DashboardController extends Controller
                     $attachments[] = 'assets/uploads/inventory_attachments/' . $filename;
                     $i++;
                 } else {
-                    return back()->withErrors(['attachment_names' => 'Un des fichiers a une extension non autorisée.']);
+                    return response()->json(['error' => 'Les fichiers doivent être de type png, jpg, jpeg, webp, pdf, xlsx, xls, doc, docx, odt, ods, ppt, pptx']);
                 }
             }
 
