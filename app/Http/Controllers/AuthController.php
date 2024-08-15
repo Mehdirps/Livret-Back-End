@@ -22,6 +22,7 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+        $livret = $user->livret;
 
         if ($user->role == 'admin') {
             return redirect()->route('admin.index');
@@ -41,7 +42,8 @@ class AuthController extends Controller
             'success' => true,
             'first_login' => $user->first_login,
             'token' => $token,
-            'user' => $user
+            'user' => $user,
+            'livret' => $livret
         ];
 
         return response()->json($response);
@@ -85,10 +87,8 @@ class AuthController extends Controller
             $mail->AddAddress($user->email);
 
             $mail->send();
-
         } catch (Exception $e) {
             return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email de vérification']);
-
         }
 
         return response()->json(['success' => "Votre inscription à été enregistrer avec succès ! Un email de vérification a été envoyé à votre adresse e-mail. Veuillez vérifier votre boite de réception."]);
@@ -98,7 +98,7 @@ class AuthController extends Controller
     {
         $user = User::where('email', $email)->first();
 
-        if(!$user){
+        if (!$user) {
             return response()->json(['error' => 'Aucun utilisateur trouvé']);
         }
         if ($user) {
