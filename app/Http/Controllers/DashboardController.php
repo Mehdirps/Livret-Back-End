@@ -698,20 +698,17 @@ class DashboardController extends Controller
 
     public function contactSupport(Request $request)
     {
-        if ($request->rgpd !== 'on') {
-            return response()->json(['error' => 'Vous devez accepter les conditions d\'utilisation']);
-        }
 
-        $validator = $request->validate([
+        $validatedData = $request->validate([
             'subject' => 'required',
             'message' => 'required',
+            'rgpd' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Les champs ne sont pas correctement remplis']);
+        if ($validatedData['rgpd'] !== true) {
+            return response()->json(['error' => 'Vous devez accepter les conditions d\'utilisation']);
         }
-
-        $user = auth()->user();
+        $user = JWTAuth::parseToken()->authenticate();
 
         try {
 
@@ -732,8 +729,8 @@ class DashboardController extends Controller
                   <h1>Demande de support</h1>
                    <p>De : ' . $user->name . '</p>
                    <p>Email : ' . $user->email . '</p>
-                   <p>Sujet : ' . $request->subject . '</p>
-                   <p>' . $request->message . '</p>
+                   <p>Sujet : ' . $validatedData['subject'] . '</p>
+                   <p>' . $validatedData['message'] . '</p>
                 </body>
                 </html>
             ';
