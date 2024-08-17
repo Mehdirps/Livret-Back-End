@@ -125,6 +125,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token invalide'], 401);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'user' => $user]);
     }
 }
