@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +15,24 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::middleware('api')->group(function () {
+
+    Route::post('/stripe-intent', function (Request $request) {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+
+        $amount = $request->amount * 100;
+        $currency = 'eur';
+
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => $currency,
+            'payment_method_types' => ['card'],
+        ]);
+
+        return response()->json(['client_secret' => $paymentIntent->client_secret]);
+    });
+
     Route::get('/', function () {
         return response()->json([
             'message' => 'Bienvenu sur l\'API de l\'application Livret',
@@ -120,7 +139,6 @@ Route::middleware('api')->group(function () {
 
         /* PDF Export */
         Route::post('datas/export', [App\Http\Controllers\DashboardController::class, 'exportDatas'])->name('dashboard.datas.export');
-
     });
 
     /* Admin */
