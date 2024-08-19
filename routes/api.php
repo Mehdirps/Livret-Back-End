@@ -178,7 +178,7 @@ Route::middleware('api')->group(function () {
 
     Route::post('/send-confirmation-email', function (\Illuminate\Http\Request $request) {
         $orderDetails = $request->all();
-
+        // TODO Faire table commande et faire creation de commande chaque commande
         try {
             $mail = new PHPMailer();
             $mail->isSMTP();
@@ -190,6 +190,8 @@ Route::middleware('api')->group(function () {
             $mail->Password = "3v;jcPFeUPMBCP9";
             $mail->SetFrom("contact@maplaque-nfc.fr", "Livret d'accueil");
             $mail->addAddress($orderDetails['user']['email'], $orderDetails['user']['name']);
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
             $mail->isHTML(true);
             $mail->Subject = 'Confirmation de votre commande';
             $body = '<div style="font-family: Arial, sans-serif; color: #333;">';
