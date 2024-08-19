@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Stripe\Stripe;
@@ -178,7 +179,18 @@ Route::middleware('api')->group(function () {
 
     Route::post('/send-confirmation-email', function (\Illuminate\Http\Request $request) {
         $orderDetails = $request->all();
-        // TODO Faire table commande et faire creation de commande chaque commande
+        
+        $productIds = array_map(function($product) {
+            return $product['id'];
+        }, $orderDetails['cart']);
+
+        $order = new Order();
+        $order->user_id = $orderDetails['user']['id'];
+        $order->order_id = $orderDetails['orderId'];
+        $order->product_ids = json_encode($productIds);
+        $order->total_price = $orderDetails['totalAmount'];
+        $order->save();
+
         try {
             $mail = new PHPMailer();
             $mail->isSMTP();
