@@ -50,6 +50,9 @@ Route::middleware('api')->group(function () {
         /* Dashboard index*/
         Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
 
+        /* Order */
+        Route::get('userOrders', [App\Http\Controllers\DashboardController::class, 'userOrders'])->name('dashboard.orders');
+
         /* Profile */
         Route::post('profile', [App\Http\Controllers\DashboardController::class, 'updateUser'])->name('dashboard.profile.update_user');
 
