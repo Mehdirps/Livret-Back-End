@@ -17,6 +17,7 @@ use App\Models\ModuleUtilsInfos;
 use App\Models\ModuleUtilsPhone;
 use App\Models\ModuleWifi;
 use App\Models\NearbyPlace;
+use App\Models\Order;
 use App\Models\PlaceGroup;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -1098,4 +1099,22 @@ class DashboardController extends Controller
             'pdf_base64' => base64_encode($output)
         ]);
     }
+
+    public function userOrders()
+{
+    $user = JWTAuth::parseToken()->authenticate();
+
+    $orders = Order::where('user_id', $user->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+    if ($orders->isEmpty()) {
+        return response()->json(['error' => 'Aucune commande trouvée']);
+    }
+
+    return response()->json([
+        'orders' => $orders,
+    ]);
+}
+
 }
