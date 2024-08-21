@@ -67,4 +67,78 @@ class LivretController extends Controller
             return response()->json(['error' => 'Ce livret n\'existe pas.'], 404);
         }
     }
+
+    public function updateLivret(LivretRequest $request)
+    {
+
+        $validatedData = $request->validated();
+
+        if (isset($validatedData['livret_id'])) {
+            $livret = Livret::find($request->livret_id);
+        } else {
+            $livret = Livret::where('user_id', JWTAuth::parseToken()->authenticate()->id)->first();
+        }
+
+        if (!$livret) {
+            return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        $livret->livret_name = $validatedData['livret_name'];
+        $livret->slug = \Str::slug($validatedData['livret_name']);
+        $livret->description = $validatedData['description'];
+        $livret->establishment_type = $validatedData['establishment_type'];
+        $livret->establishment_name = $validatedData['establishment_name'];
+        $livret->establishment_address = $validatedData['establishment_address'];
+        $livret->establishment_phone = $validatedData['establishment_phone'];
+        $livret->establishment_email = $validatedData['establishment_email'];
+        $livret->establishment_website = $validatedData['establishment_website'];
+        $livret->facebook = $validatedData['facebook'];
+        $livret->twitter = $validatedData['twitter'];
+        $livret->instagram = $validatedData['instagram'];
+        $livret->linkedin = $validatedData['linkedin'];
+        $livret->tripadvisor = $validatedData['tripadvisor'];
+
+        if ($request->hasFile('logo')) {
+
+            $validatedDataLogo = $request->validate([
+                'logo' => 'mimes:png,jpg,jpeg,webp',
+            ]);
+
+            $logo = $validatedDataLogo['logo'];
+            $filename = time() . '.' . $logo->getClientOriginalExtension();
+
+            if ($livret->logo && file_exists(public_path($livret->logo))) {
+                unlink(public_path($livret->logo));
+            }
+
+            $logo->move(public_path('assets/uploads/logos'), $filename);
+            $livret->logo = 'assets/uploads/logos/' . $filename;
+        }
+
+        $livret->save();
+
+        if (isset($validatedData['livret_id'])) {
+            return response()->json(['message' => 'Livret mis à jour avec succès', 'livret' => $livret]);
+        } else {
+            return response()->json(['message' => 'Votre livret a été mis à jour avec succès', 'livret' => $livret]);
+        }
+    }
+
+    public function updateTextDesign(Request $request)
+    {
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
+
+        if (!$livret) {
+            return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        $livret->font = $request->input('fontFamily');
+        $livret->text_color = $request->input('fontColor');
+
+        $livret->save();
+
+        return response()->json(['message' => 'Le design du texte a été mis à jour avec succès']);
+    }
+
+    
 }

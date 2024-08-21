@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -63,7 +65,8 @@ class AuthController extends Controller
         ]);
 
         try {
-
+            // TODO Mettre dans .env les datas emails
+            // TODO Faire un service sendEmail(addAddress, body, subject)
             $mail = new PHPMailer();
             $mail->isSMTP();
             $mail->SMTPAuth = true;
@@ -126,5 +129,28 @@ class AuthController extends Controller
         }
 
         return response()->json(['success' => true, 'user' => $user]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            'old_password' => 'required',
+            'password' => 'required',
+            'password_confirmation' => 'required|same:password',
+        ]);
+
+        /*        $validatedData = $validator->validated();*/
+
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if (!Hash::check($validatedData['old_password'], $user->password)) {
+            return response()->json(['error' => 'L\'ancien mot de passe est incorrect']);
+        }
+
+        $user->password = Hash::make($validatedData['password']);
+        $user->save();
+
+        return response()->json(['message' => 'Votre mot de passe a été mis à jour avec succès']);
     }
 }
