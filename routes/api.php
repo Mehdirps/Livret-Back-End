@@ -118,7 +118,7 @@ Route::middleware('api')->group(function () {
 
         /* Products */
         Route::get('products', [App\Http\Controllers\ProductController::class, 'products']);
-        /*    Route::get('products/search', [App\Http\Controllers\DashboardController::class, 'searchProducts'])->name('dashboard.products.search');*/
+        /*    Route::get('products/search', [App\Http\Controllers\DashboardController::class, 'searchProducts']);*/
 
         /* Text design */
         Route::post('/update-text-design', [App\Http\Controllers\LivretController::class, 'updateTextDesign']);
