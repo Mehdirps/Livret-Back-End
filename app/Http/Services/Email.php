@@ -24,6 +24,7 @@ class Email
             $mail->SetFrom(env('MAIL_FROM_ADDRESS'), "Livret d'accueil");
             $mail->Subject = $subject;
             $mail->Body = $body;
+            $mail->CharSet = 'UTF-8';
             $mail->AddAddress($email);
 
             $mail->send();
