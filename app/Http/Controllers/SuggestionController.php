@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Email;
 use App\Models\Livret;
 use App\Models\Suggest;
 use Illuminate\Http\Request;
@@ -35,29 +36,16 @@ class SuggestionController extends Controller
             $suggestion->status = 'pending';
             $suggestion->save();
 
-            try {
+            $emailToSend = Livret::find($validatedData['livret_id'])->email;
 
-                $mail = new PHPMailer();
-                $mail->isSMTP();
-                $mail->SMTPAuth = true;
-                $mail->SMTPSecure = 'ssl';
-                $mail->Host = 'ssl0.ovh.net';
-                $mail->Port = '465';
-                $mail->isHTML(true);
-                $mail->Username = "contact@maplaque-nfc.fr";
-                $mail->Password = "3v;jcPFeUPMBCP9";
-                $mail->SetFrom("contact@maplaque-nfc.fr", "Livret d'accueil");
-                $mail->Subject = 'Nouvelle suggestion pour votre livret';
-                $mail->Body = '<h1>Nouvelle suggestion de ' . $request->name . '</h1>
+            $body = '<h1>Nouvelle suggestion de ' . $request->name . '</h1>
                               <p>Titre: ' . $request->title . '</p>
                               <p>Message: ' . $request->message . '</p>';
-                $mail->AddAddress('mehdi.raposo77@gmail.com');
-                $mail->send();
 
-                return response()->json(['message' => 'Votre suggestion a été envoyée avec succès.'], 201);
-            } catch (Exception $e) {
-                return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email.'], 500);
-            }
+            $mail = new Email();
+            $mail->sendEmail($emailToSend, $body, 'Nouvelle suggestion');
+
+            return response()->json(['message' => 'Votre suggestion a été envoyée avec succès.'], 201);
         }
     }
 

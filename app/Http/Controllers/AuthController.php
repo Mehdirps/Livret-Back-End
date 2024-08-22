@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Services\Email;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,21 +65,7 @@ class AuthController extends Controller
             'etablissement_type' => $validatedData['etablissement_type'],
         ]);
 
-        try {
-            // TODO Mettre dans .env les datas emails
-            // TODO Faire un service sendEmail(addAddress, body, subject)
-            $mail = new PHPMailer();
-            $mail->isSMTP();
-            $mail->SMTPAuth = true;
-            $mail->SMTPSecure = 'ssl';
-            $mail->Host = 'ssl0.ovh.net';
-            $mail->Port = '465';
-            $mail->isHTML(true);
-            $mail->Username = "contact@maplaque-nfc.fr";
-            $mail->Password = "3v;jcPFeUPMBCP9";
-            $mail->SetFrom("contact@maplaque-nfc.fr", "Livret d'accueil");
-            $mail->Subject = 'Merci pour votre inscription !';
-            $mail->Body = '
+        $emailBody = '
             <h1>Bienvenue sur notre site web</h1>
            <p>Merci de vous être inscrit sur notre site web. Veuillez cliquer sur le lien ci-dessous pour vérifier votre adresse e-mail et compléter votre inscription :</p>
            <p>
@@ -87,12 +74,10 @@ class AuthController extends Controller
            <p>Si vous ne vous êtes pas inscrit sur notre site web, veuillez ignorer cet email.</p>
            <p>Meilleures salutations,</p>
            <p>L\'équipe de votre site web</p>';
-            $mail->AddAddress($user->email);
 
-            $mail->send();
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Erreur lors de l\'envoi de l\'email de vérification']);
-        }
+        $mail = new Email();
+        $mail->sendEmail($user->email, $emailBody, 'Merci pour votre inscription !');
+
 
         return response()->json(['success' => "Votre inscription à été enregistrer avec succès ! Un email de vérification a été envoyé à votre adresse e-mail. Veuillez vérifier votre boite de réception."]);
     }

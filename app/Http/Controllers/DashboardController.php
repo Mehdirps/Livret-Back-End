@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\Email;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -81,20 +82,7 @@ class DashboardController extends Controller
         }
         $user = JWTAuth::parseToken()->authenticate();
 
-        try {
-
-            $mail = new PHPMailer();
-            $mail->isSMTP();
-            $mail->SMTPAuth = true;
-            $mail->SMTPSecure = 'ssl';
-            $mail->Host = 'ssl0.ovh.net';
-            $mail->Port = '465';
-            $mail->isHTML(true);
-            $mail->Username = "contact@maplaque-nfc.fr";
-            $mail->Password = "3v;jcPFeUPMBCP9";
-            $mail->SetFrom("contact@maplaque-nfc.fr", "Livret d'accueil");
-            $mail->Subject = 'Nouveau support - Livret d\'accueil';
-            $mail->Body = '
+        $emailBody = '
                 <html>
                 <body>
                   <h1>Demande de support</h1>
@@ -105,14 +93,11 @@ class DashboardController extends Controller
                 </body>
                 </html>
             ';
-            $mail->AddAddress('mehdi.raposo77@gmail.com');
 
-            $mail->send();
+        $mail = new Email();
+        $mail->sendEmail(env('MAIL_FROM_ADDRESS'), $emailBody, 'Nouveau support - Livret d\'accueil');
 
-            return response()->json(['message' => 'Votre demande de support a été envoyée avec succès']);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Une erreur est survenue lors de l\'envoi de votre demande']);
-        }
+        return response()->json(['message' => 'Votre demande de support a été envoyée avec succès']);
     }
 
     /*  public function searchProducts(Request $request)
