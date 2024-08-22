@@ -24,7 +24,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Identifiants incorrects'], 401);
         }
 
-        $user = auth()->user();
+        $user = JWTAuth::parseToken()->authenticate();
         $livret = $user->livret;
 
         if ($user->role == 'admin') {

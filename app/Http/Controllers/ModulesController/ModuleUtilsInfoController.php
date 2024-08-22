@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\ModuleUtilsInfos;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleUtilsInfoController extends Controller
 {
     public function addModuleUtilsInfos(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -27,7 +28,7 @@ class ModuleUtilsInfoController extends Controller
         $utilsInfos->livret = $livret->id;
         $utilsInfos->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'L\'info utile a été mis à jour avec succès']);
         }
 
@@ -44,7 +45,7 @@ class ModuleUtilsInfoController extends Controller
 
         $utilsInfos->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'L\'info utile a été supprimé avec succès']);
         }
 

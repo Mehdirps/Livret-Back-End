@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\ModuleWifi;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleWifiController extends Controller
 {
     public function addModuleWifi(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -27,7 +28,7 @@ class ModuleWifiController extends Controller
         $wifi->livret = $livret->id;
         $wifi->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Votre réseau wifi a été mis à jour avec succès']);
         }
 
@@ -44,7 +45,7 @@ class ModuleWifiController extends Controller
 
         $wifi->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Votre réseau wifi a été supprimé avec succès']);
         }
 

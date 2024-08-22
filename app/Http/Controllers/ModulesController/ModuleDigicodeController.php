@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\ModuleDigicode;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleDigicodeController extends Controller
 {
     public function addModuleDigicode(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -26,7 +27,7 @@ class ModuleDigicodeController extends Controller
         $digicode->livret = $livret->id;
         $digicode->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le digicode a été mis à jour avec succès']);
         }
 
@@ -43,7 +44,7 @@ class ModuleDigicodeController extends Controller
 
         $digicode->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le digicode a été supprimé avec succès']);
         }
 

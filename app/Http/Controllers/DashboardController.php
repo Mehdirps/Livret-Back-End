@@ -28,7 +28,7 @@ class DashboardController extends Controller
 
     public function seeFirstLogin()
     {
-        if (!auth()->user()->first_login && auth()->user()->livret) {
+        if (!JWTAuth::parseToken()->authenticate()->first_login && JWTAuth::parseToken()->authenticate()->livret) {
             return response()->json(['first_login' => false]);
         }
 
@@ -38,7 +38,7 @@ class DashboardController extends Controller
 
     public function profile()
     {
-        $user = auth()->user();
+        $user = JWTAuth::parseToken()->authenticate();
         $livret = $user->livret;
 
         if (!$livret) {
@@ -57,7 +57,7 @@ class DashboardController extends Controller
 
     public function editLivret()
     {
-        $livret = auth()->user()->livret;
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);

@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\NearbyPlace;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleNearbyPlaceController extends Controller
 {
     public function addModuleNearbyPlaces(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -30,7 +31,7 @@ class ModuleNearbyPlaceController extends Controller
         $nearbyPlace->livret_id = $livret->id;
         $nearbyPlace->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le lieu a été ajouté avec succès']);
         }
 
@@ -47,7 +48,7 @@ class ModuleNearbyPlaceController extends Controller
 
         $nearbyPlace->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le lieu a été supprimé avec succès']);
         }
 

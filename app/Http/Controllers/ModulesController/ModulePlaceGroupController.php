@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\PlaceGroup;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModulePlaceGroupController extends Controller
 {
     public function addModulePlacesGroups(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -25,7 +26,7 @@ class ModulePlaceGroupController extends Controller
         $placeGroup->livret_id = $livret->id;
         $placeGroup->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le groupe de lieu a été ajouté avec succès']);
         }
 
@@ -42,7 +43,7 @@ class ModulePlaceGroupController extends Controller
 
         $placeGroup->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'Le groupe de lieu a été supprimé avec succès']);
         }
 

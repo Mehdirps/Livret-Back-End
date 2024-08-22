@@ -8,6 +8,7 @@ use App\Models\Suggest;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SuggestionController extends Controller
 {
@@ -51,7 +52,7 @@ class SuggestionController extends Controller
 
     public function suggestions()
     {
-        $livret = auth()->user()->livret;
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);

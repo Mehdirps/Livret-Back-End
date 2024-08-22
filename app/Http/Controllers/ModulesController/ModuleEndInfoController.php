@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\ModuleEndInfos;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleEndInfoController extends Controller
 {
     public function addModuleEndInfo(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -26,7 +27,7 @@ class ModuleEndInfoController extends Controller
         $startInfo->livret = $livret->id;
         $startInfo->save();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'L\'info de départ a été mis à jour avec succès']);
         }
 
@@ -43,7 +44,7 @@ class ModuleEndInfoController extends Controller
 
         $startInfo->delete();
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'L\'info de départ a été supprimé avec succès']);
         }
 

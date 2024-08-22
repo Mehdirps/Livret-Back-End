@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Livret;
 use App\Models\ModuleHome;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ModuleHomeInfoController extends Controller
 {
     public function addModuleHomeInfos(Request $request)
     {
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             $livret = Livret::find($request->livret_id);
         } else {
-            $livret = auth()->user()->livret;
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
         }
 
         if (!$livret) {
@@ -33,7 +34,7 @@ class ModuleHomeInfoController extends Controller
             $homeInfos->save();
         }
 
-        if (auth()->user()->role == 'admin') {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
             return response()->json(['message' => 'L\'info de départ a été mis à jour avec succès']);
         }
 
@@ -46,7 +47,7 @@ class ModuleHomeInfoController extends Controller
            $homeInfos = ModuleHome::find($id);
            $homeInfos->delete();
 
-           if(auth()->user()->role == 'admin'){
+           if(JWTAuth::parseToken()->authenticate()->role == 'admin'){
                return redirect()->route('admin.livrets.index')->with('success', 'Votre réseau wifi a été supprimé avec succès');
            }
 
