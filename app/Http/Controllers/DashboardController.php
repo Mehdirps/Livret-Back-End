@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\Email;
+use App\Models\Livret;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -51,19 +52,6 @@ class DashboardController extends Controller
 
         return response()->json([
             'user' => $user,
-            'livret' => $livret,
-        ]);
-    }
-
-    public function editLivret()
-    {
-        $livret = JWTAuth::parseToken()->authenticate()->livret;
-
-        if (!$livret) {
-            return response()->json(['error' => 'Livret introuvable']);
-        }
-
-        return response()->json([
             'livret' => $livret,
         ]);
     }

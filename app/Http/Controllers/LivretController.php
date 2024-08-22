@@ -140,5 +140,28 @@ class LivretController extends Controller
         return response()->json(['message' => 'Le design du texte a été mis à jour avec succès']);
     }
 
-    
+    public function getAllLivretModules()
+    {
+        $livret = JWTAuth::parseToken()->authenticate()->livret;
+
+        $modules = [
+            'endInfos' => $livret->endInfos,
+            'digicode' => $livret->digicode,
+            'wifi' => $livret->wifi,
+            'homeInfos' => $livret->homeInfos,
+            'utilsPhone' => $livret->utilsPhone,
+            'startInfos' => $livret->startInfos,
+            'utilsInfos' => $livret->utilsInfos,
+            'placeGroups' => $livret->placeGroups,
+            'NearbyPlaces' => $livret->NearbyPlaces,
+        ];
+
+        if (!$livret) {
+            return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        return response()->json([
+            'modules' => $modules,
+        ]);
+    }
 }

@@ -57,11 +57,11 @@ Route::middleware('api')->group(function () {
         Route::post('profile/update_livret', [App\Http\Controllers\LivretController::class, 'updateLivret']);
         Route::get('background', [App\Http\Controllers\BackgroundController::class, 'background']);
         Route::get('background/{id}', [App\Http\Controllers\BackgroundController::class, 'updateBackground']);
-        // Route::get('edit_livret', [App\Http\Controllers\DashboardController::class, 'editLivret']);
         Route::get('stats', [App\Http\Controllers\LivretViewController::class, 'stats']);
         Route::post('statsBetweenDates', [App\Http\Controllers\LivretViewController::class, 'statsBetweenDates']);
-
+        
         /* Livret Module */
+        Route::get('get_all_livret_modules', [App\Http\Controllers\LivretController::class, 'getAllLivretModules']);
         /* Wifi */
         Route::post('module/wifi', [App\Http\Controllers\ModuleWifiController::class, 'addModuleWifi']);
         Route::get('module/wifi/{id}', [App\Http\Controllers\ModuleWifiController::class, 'deleteModuleWifi']);
