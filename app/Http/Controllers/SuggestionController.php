@@ -36,8 +36,8 @@ class SuggestionController extends Controller
             $suggestion->status = 'pending';
             $suggestion->save();
 
-            $emailToSend = Livret::find($validatedData['livret_id'])->email;
-
+            $emailToSend = Livret::find($validatedData['livret_id'])->user->email;
+            
             $body = '<h1>Nouvelle suggestion de ' . $request->name . '</h1>
                               <p>Titre: ' . $request->title . '</p>
                               <p>Message: ' . $request->message . '</p>';
