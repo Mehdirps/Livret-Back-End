@@ -160,7 +160,7 @@ Route::middleware('api')->group(function () {
         Route::post('product_categories/update', [App\Http\Controllers\AdminController::class, 'updateProductCategory'])->name('admin.product_categories.update');
     });
 
-    Route::post('/stripe-intent', [App\Http\Service\StripeService::class, 'stripeIntent']);
+    Route::post('/stripe-intent', [App\Http\Services\StripeService::class, 'stripeIntent']);
 
     Route::post('/send-confirmation-email', [App\Http\Controllers\OrderController::class, 'sendConfirmationEmail']);
 });
