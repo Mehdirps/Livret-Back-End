@@ -9,6 +9,8 @@ class Email
 {
     public function sendEmail($email, $body, $subject)
     {
+        // TODO Faire template email
+        // TODO tester l'envoie d'email de chaque funtion
         try {
             $mail = new PHPMailer();
             $mail->isSMTP();
