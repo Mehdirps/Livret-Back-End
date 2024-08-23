@@ -142,22 +142,77 @@ class LivretController extends Controller
 
     public function getAllLivretModules()
     {
-        $livret = JWTAuth::parseToken()->authenticate()->livret;
-
-        $modules = [
-            'endInfos' => $livret->endInfos,
-            'digicode' => $livret->digicode,
-            'wifi' => $livret->wifi,
-            'homeInfos' => $livret->homeInfos,
-            'utilsPhone' => $livret->utilsPhone,
-            'startInfos' => $livret->startInfos,
-            'utilsInfos' => $livret->utilsInfos,
-            'placeGroups' => $livret->placeGroups,
-            'NearbyPlaces' => $livret->NearbyPlaces,
-        ];
+        $user = JWTAuth::parseToken()->authenticate();
+        $livret = $user->livret;
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        $modules = [];
+
+        if ($livret->endInfos) {
+            $modules[] = [
+                'type' => ['name' => 'endInfos', 'title' => 'Infos de départ'],
+                'icon' => 'bi bi-arrow-down-left',
+                'data' => $livret->endInfos
+            ];
+        }
+        if ($livret->digicode) {
+            $modules[] = [
+                'type' => ['name' => 'digicode', 'title' => 'Digicode'],
+                'icon' => 'bi bi-key',
+                'data' => $livret->digicode
+            ];
+        }
+        if ($livret->wifi) {
+            $modules[] = [
+                'type' => ['name' => 'wifi', 'title' => 'Informations Wi-Fi'],
+                'icon' => 'bi bi-wifi',
+                'data' => $livret->wifi
+            ];
+        }
+        if ($livret->homeInfos) {
+            $modules[] = [
+                'type' => ['name' => 'homeInfos', 'title' => 'Mot d\'accueil'],
+                'icon' => 'bi bi-envelope',
+                'data' => [$livret->homeInfos]
+            ];
+        }
+        if ($livret->utilsPhone) {
+            $modules[] = [
+                'type' => ['name' => 'utilsPhone', 'title' => 'Numéros utiles'],
+                'icon' => 'bi bi-telephone',
+                'data' => $livret->utilsPhone
+            ];
+        }
+        if ($livret->startInfos) {
+            $modules[] = [
+                'type' => ['name' => 'startInfos', 'title' => 'Infos d\'arrivée'],
+                'icon' => 'bi bi-arrow-up-right',
+                'data' => $livret->startInfos
+            ];
+        }
+        if ($livret->utilsInfos) {
+            $modules[] = [
+                'type' => ['name' => 'utilsInfos', 'title' => 'Infos pratiques'],
+                'icon' => 'bi bi-info-circle',
+                'data' => $livret->utilsInfos
+            ];
+        }
+        if ($livret->placeGroups) {
+            $modules[] = [
+                'type' => ['name' => 'placeGroups', 'title' => 'Groupes de lieux'],
+                'icon' => 'bi bi-geo-alt',
+                'data' => $livret->placeGroups
+            ];
+        }
+        if ($livret->NearbyPlaces) {
+            $modules[] = [
+                'type' => ['name' => 'NearbyPlaces', 'title' => 'Lieux à proximité'],
+                'icon' => 'bi bi-geo-alt',
+                'data' => $livret->NearbyPlaces
+            ];
         }
 
         return response()->json([
