@@ -43,15 +43,42 @@ class LivretController extends Controller
         $livret = Livret::where('id', $id)->where('slug', $slug)->first();
 
         $modules = [
-            'wifi' => $livret->wifi,
-            'digicode' => $livret->digicode,
-            'endInfos' => $livret->endInfos,
-            'homeInfos' => $livret->homeInfos,
-            'utilsPhone' => $livret->utilsPhone,
-            'startInfos' => $livret->startInfos,
-            'utilsInfos' => $livret->utilsInfos,
-            'placeGroups' => $livret->placeGroups,
-            'NearbyPlaces' => $livret->NearbyPlaces,
+            'wifi' => [
+                'data' => $livret->wifi,
+                'order' => $livret->wifi[1]->order
+            ],
+            'digicode' => [
+                'data' => $livret->digicode,
+                'order' => $livret->digicode[1]->order
+            ],
+            'endInfos' => [
+                'data' => $livret->endInfos,
+                'order' => $livret->endInfos[1]->order
+            ],
+            'homeInfos' => [
+                'data' => $livret->homeInfos,
+                'order' => null
+            ],
+            'utilsPhone' => [
+                'data' => $livret->utilsPhone,
+                'order' => $livret->utilsPhone[1]->order
+            ],
+            'startInfos' => [
+                'data' => $livret->startInfos,
+                'order' => $livret->startInfos[1]->order
+            ],
+            'utilsInfos' => [
+                'data' => $livret->utilsInfos,
+                'order' => $livret->utilsInfos[1]->order
+            ],
+            'placeGroups' => [
+                'data' => $livret->placeGroups,
+                'order' => null
+            ],
+            'NearbyPlaces' => [
+                'data' => $livret->NearbyPlaces,
+                'order' => $livret->NearbyPlaces[1]->order + 1
+            ],
         ];
 
         if ($livret) {
@@ -160,63 +187,72 @@ class LivretController extends Controller
             $modules[] = [
                 'type' => ['name' => 'endInfos', 'title' => 'Infos de départ'],
                 'icon' => 'bi bi-arrow-down-left',
-                'data' => $livret->endInfos
+                'data' => $livret->endInfos,
+                'order' => $livret->endInfos[1]->order
             ];
         }
         if ($livret->digicode) {
             $modules[] = [
                 'type' => ['name' => 'digicode', 'title' => 'Digicode'],
                 'icon' => 'bi bi-key',
-                'data' => $livret->digicode
+                'data' => $livret->digicode,
+                'order' => $livret->digicode[1]->order
             ];
         }
         if ($livret->wifi) {
             $modules[] = [
                 'type' => ['name' => 'wifi', 'title' => 'Informations Wi-Fi'],
                 'icon' => 'bi bi-wifi',
-                'data' => $livret->wifi
+                'data' => $livret->wifi,
+                'order' => $livret->wifi[1]->order
             ];
         }
         if ($livret->homeInfos) {
             $modules[] = [
                 'type' => ['name' => 'homeInfos', 'title' => 'Mot d\'accueil'],
                 'icon' => 'bi bi-envelope',
-                'data' => $livret->homeInfos
+                'data' => $livret->homeInfos,
+                'order' => null
             ];
         }
         if ($livret->utilsPhone) {
             $modules[] = [
                 'type' => ['name' => 'utilsPhone', 'title' => 'Numéros utiles'],
                 'icon' => 'bi bi-telephone',
-                'data' => $livret->utilsPhone
+                'data' => $livret->utilsPhone,
+                'order' => $livret->utilsPhone[1]->order
             ];
         }
         if ($livret->startInfos) {
             $modules[] = [
                 'type' => ['name' => 'startInfos', 'title' => 'Infos d\'arrivée'],
                 'icon' => 'bi bi-arrow-up-right',
-                'data' => $livret->startInfos
+                'data' => $livret->startInfos,
+                'order' => $livret->startInfos[1]->order
             ];
         }
         if ($livret->utilsInfos) {
             $modules[] = [
                 'type' => ['name' => 'utilsInfos', 'title' => 'Infos pratiques'],
                 'icon' => 'bi bi-info-circle',
-                'data' => $livret->utilsInfos
+                'data' => $livret->utilsInfos,
+                'order' => $livret->utilsInfos[1]->order
             ];
         }
         if ($livret->placeGroups) {
             $modules[] = [
                 'type' => ['name' => 'placeGroups', 'title' => 'Groupes de lieux'],
                 'icon' => 'bi bi-geo-alt',
-                'data' => $livret->placeGroups
+                'data' => $livret->placeGroups,
+                'order' => null
             ];
         }
         if ($livret->NearbyPlaces) {
             $modules[] = [
                 'type' => ['name' => 'nearbyPlaces', 'title' => 'Lieux à proximité'],
                 'icon' => 'bi bi-geo-alt',
-                'data' => $livret->NearbyPlaces
+                'data' => $livret->NearbyPlaces,
+                'order' => $livret->NearbyPlaces[1]->order + 1
             ];
         }
 
