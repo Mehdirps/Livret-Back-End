@@ -132,8 +132,13 @@ class LivretController extends Controller
             return response()->json(['error' => 'Livret introuvable']);
         }
 
-        $livret->font = $request->input('fontFamily');
-        $livret->text_color = $request->input('fontColor');
+        $validatedData = $request->validate([
+            'fontFamily' => 'required|string',
+            'fontColor' => 'required|string',
+        ]);
+
+        $livret->font = $validatedData['fontFamily'];
+        $livret->text_color = $validatedData['fontColor'];
 
         $livret->save();
 
@@ -176,7 +181,7 @@ class LivretController extends Controller
             $modules[] = [
                 'type' => ['name' => 'homeInfos', 'title' => 'Mot d\'accueil'],
                 'icon' => 'bi bi-envelope',
-                'data' => [$livret->homeInfos]
+                'data' => $livret->homeInfos
             ];
         }
         if ($livret->utilsPhone) {
@@ -209,7 +214,7 @@ class LivretController extends Controller
         }
         if ($livret->NearbyPlaces) {
             $modules[] = [
-                'type' => ['name' => 'NearbyPlaces', 'title' => 'Lieux à proximité'],
+                'type' => ['name' => 'nearbyPlaces', 'title' => 'Lieux à proximité'],
                 'icon' => 'bi bi-geo-alt',
                 'data' => $livret->NearbyPlaces
             ];
