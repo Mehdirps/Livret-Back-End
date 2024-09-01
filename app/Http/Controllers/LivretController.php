@@ -169,7 +169,7 @@ class LivretController extends Controller
 
         $livret->save();
 
-        return response()->json(['message' => 'Le design du texte a été mis à jour avec succès']);
+        return response()->json(['message' => 'Le design du texte a été mis à jour avec succès', 'livret' => $livret]);
     }
 
     public function getAllLivretModules()
