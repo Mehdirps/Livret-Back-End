@@ -98,7 +98,7 @@ Route::middleware('api')->group(function () {
         Route::get('module/nearby_places/{id}', [App\Http\Controllers\ModuleNearbyPlaceController::class, 'deleteModuleNearbyPlaces']);
 
         /* Module order */
-        Route::post('/update-order', [App\Http\Controllers\ModuleController::class, 'updateOrder']);
+        Route::post('/update-order', [App\Http\Controllers\ModulesController\ModuleController::class, 'updateOrder']);
 
         /* Inventories */
         Route::get('inventories', [App\Http\Controllers\InventoryController::class, 'inventories']);
