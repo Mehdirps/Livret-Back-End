@@ -59,7 +59,7 @@ Route::middleware('api')->group(function () {
         Route::get('background/{id}', [App\Http\Controllers\BackgroundController::class, 'updateBackground']);
         Route::get('stats', [App\Http\Controllers\LivretViewController::class, 'stats']);
         Route::post('statsBetweenDates', [App\Http\Controllers\LivretViewController::class, 'statsBetweenDates']);
-        
+
         /* Livret Module */
         Route::get('get_all_livret_modules', [App\Http\Controllers\LivretController::class, 'getAllLivretModules']);
         /* Wifi */
