@@ -20,45 +20,45 @@ class ModuleController extends Controller
 
         foreach ($order as $item) {
             $index = $item['order'];
-            $moduleName = $item['type']['title'];
+            $moduleName = $item['type']['name'];
 
-            if ($moduleName == 'Wifi') {
+            if ($moduleName == 'wifi') {
                 $modules = $livret->wifi;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Digicode') {
+            } elseif ($moduleName == 'digicode') {
                 $modules = $livret->digicode;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Infos de départ') {
+            } elseif ($moduleName == 'endInfos') {
                 $modules = $livret->endInfos;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Numéros utiles') {
+            } elseif ($moduleName == 'utilsPhone') {
                 $modules = $livret->utilsPhone;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Infos d\'arrivée') {
+            } elseif ($moduleName == 'startInfos') {
                 $modules = $livret->startInfos;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Infos utiles') {
+            } elseif ($moduleName == 'utilsInfos') {
                 $modules = $livret->utilsInfos;
                 foreach ($modules as $module) {
                     $module->order = $index;
                     $module->save();
                 }
-            } elseif ($moduleName == 'Lieux à proximité') {
+            } elseif ($moduleName == 'nearbyPlaces') {
                 $modules = $livret->nearbyPlaces;
                 foreach ($modules as $module) {
                     $module->order = $index;

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ModulesController;
 
 use App\Models\Livret;
 use App\Models\ModuleEndInfos;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 
 class ModuleEndInfoController extends Controller
 {
@@ -19,6 +20,10 @@ class ModuleEndInfoController extends Controller
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        if(!$request->name || !$request->text){
+            return response()->json(['error' => 'Veuillez remplir tous les champs']);
         }
 
         $startInfo = new ModuleEndInfos();

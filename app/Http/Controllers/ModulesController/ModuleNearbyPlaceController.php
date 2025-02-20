@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ModulesController;
 
 use App\Models\Livret;
 use App\Models\NearbyPlace;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 
 class ModuleNearbyPlaceController extends Controller
 {
@@ -19,6 +20,10 @@ class ModuleNearbyPlaceController extends Controller
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        if(!$request->placeName || !$request->placeAddress || !$request->placePhone || !$request->placeDescription || !$request->placeGroup || !$request->travelTime){
+            return response()->json(['error' => 'Veuillez remplir tous les champs']);
         }
 
         $nearbyPlace = new NearbyPlace();

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ModulesController;
 
 use App\Models\Livret;
 use App\Models\PlaceGroup;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 
 class ModulePlaceGroupController extends Controller
 {
@@ -19,6 +20,10 @@ class ModulePlaceGroupController extends Controller
 
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        if(!$request->groupName){
+            return response()->json(['error' => 'Veuillez remplir tous les champs']);
         }
 
         $placeGroup = new PlaceGroup();
@@ -48,5 +53,22 @@ class ModulePlaceGroupController extends Controller
         }
 
         return response()->json(['message' => 'Votre groupe a été supprimé avec succès']);
+    }
+
+    public function getPlacesGroups(Request $request)
+    {
+        if (JWTAuth::parseToken()->authenticate()->role == 'admin') {
+            $livret = Livret::find($request->livret_id);
+        } else {
+            $livret = JWTAuth::parseToken()->authenticate()->livret;
+        }
+
+        if (!$livret) {
+            return response()->json(['error' => 'Livret introuvable']);
+        }
+
+        $placeGroups = PlaceGroup::where('livret_id', $livret->id)->get();
+
+        return response()->json(["placeGroups" => $placeGroups]);
     }
 }

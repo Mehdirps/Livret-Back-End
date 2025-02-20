@@ -45,15 +45,15 @@ class LivretController extends Controller
         $modules = [
             'wifi' => [
                 'data' => $livret->wifi,
-                'order' => $livret->wifi[1]->order
+                'order' => $livret->wifi[0]->order ?? null
             ],
             'digicode' => [
                 'data' => $livret->digicode,
-                'order' => $livret->digicode[1]->order
+                'order' => $livret->digicode[0]->order ?? null
             ],
             'endInfos' => [
                 'data' => $livret->endInfos,
-                'order' => $livret->endInfos[1]->order
+                'order' => $livret->endInfos[0]->order ?? null
             ],
             'homeInfos' => [
                 'data' => $livret->homeInfos,
@@ -61,15 +61,15 @@ class LivretController extends Controller
             ],
             'utilsPhone' => [
                 'data' => $livret->utilsPhone,
-                'order' => $livret->utilsPhone[1]->order
+                'order' => $livret->utilsPhone[0]->order ?? null
             ],
             'startInfos' => [
                 'data' => $livret->startInfos,
-                'order' => $livret->startInfos[1]->order
+                'order' => $livret->startInfos[0]->order ?? null
             ],
             'utilsInfos' => [
                 'data' => $livret->utilsInfos,
-                'order' => $livret->utilsInfos[1]->order
+                'order' => $livret->utilsInfos[0]->order ?? null
             ],
             'placeGroups' => [
                 'data' => $livret->placeGroups,
@@ -77,7 +77,7 @@ class LivretController extends Controller
             ],
             'NearbyPlaces' => [
                 'data' => $livret->NearbyPlaces,
-                'order' => $livret->NearbyPlaces[1]->order + 1
+                'order' => $livret->NearbyPlaces[0]->order ?? null
             ],
         ];
 
@@ -188,7 +188,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'endInfos', 'title' => 'Infos de départ'],
                 'icon' => 'bi bi-arrow-down-left',
                 'data' => $livret->endInfos,
-                'order' => $livret->endInfos[1]->order
+                'order' => $livret->endInfos[0]->order ?? null
             ];
         }
         if ($livret->digicode) {
@@ -196,7 +196,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'digicode', 'title' => 'Digicode'],
                 'icon' => 'bi bi-key',
                 'data' => $livret->digicode,
-                'order' => $livret->digicode[1]->order
+                'order' => $livret->digicode[0]->order ?? null
             ];
         }
         if ($livret->wifi) {
@@ -204,7 +204,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'wifi', 'title' => 'Informations Wi-Fi'],
                 'icon' => 'bi bi-wifi',
                 'data' => $livret->wifi,
-                'order' => $livret->wifi[1]->order
+                'order' => $livret->wifi[0]->order ?? null
             ];
         }
         if ($livret->homeInfos) {
@@ -220,7 +220,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'utilsPhone', 'title' => 'Numéros utiles'],
                 'icon' => 'bi bi-telephone',
                 'data' => $livret->utilsPhone,
-                'order' => $livret->utilsPhone[1]->order
+                'order' => $livret->utilsPhone[0]->order ?? null
             ];
         }
         if ($livret->startInfos) {
@@ -228,7 +228,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'startInfos', 'title' => 'Infos d\'arrivée'],
                 'icon' => 'bi bi-arrow-up-right',
                 'data' => $livret->startInfos,
-                'order' => $livret->startInfos[1]->order
+                'order' => $livret->startInfos[0]->order ?? null
             ];
         }
         if ($livret->utilsInfos) {
@@ -236,7 +236,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'utilsInfos', 'title' => 'Infos pratiques'],
                 'icon' => 'bi bi-info-circle',
                 'data' => $livret->utilsInfos,
-                'order' => $livret->utilsInfos[1]->order
+                'order' => $livret->utilsInfos[0]->order ?? null
             ];
         }
         if ($livret->placeGroups) {
@@ -252,7 +252,7 @@ class LivretController extends Controller
                 'type' => ['name' => 'nearbyPlaces', 'title' => 'Lieux à proximité'],
                 'icon' => 'bi bi-geo-alt',
                 'data' => $livret->NearbyPlaces,
-                'order' => $livret->NearbyPlaces[1]->order + 1
+                'order' => $livret->NearbyPlaces[0]->order ?? null
             ];
         }
 

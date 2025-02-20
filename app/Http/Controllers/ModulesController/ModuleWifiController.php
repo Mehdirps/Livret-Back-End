@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ModulesController;
 
 use App\Models\Livret;
 use App\Models\ModuleWifi;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 
 class ModuleWifiController extends Controller
 {
@@ -21,6 +22,9 @@ class ModuleWifiController extends Controller
             return response()->json(['error' => 'Livret introuvable']);
         }
 
+        if(!$request->wifiName || !$request->wifiPassword){
+            return response()->json(['error' => 'Veuillez remplir tous les champs']);
+        }
 
         $wifi = new ModuleWifi();
         $wifi->ssid = $request->wifiName;

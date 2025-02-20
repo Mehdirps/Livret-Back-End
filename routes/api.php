@@ -63,40 +63,40 @@ Route::middleware('api')->group(function () {
         /* Livret Module */
         Route::get('get_all_livret_modules', [App\Http\Controllers\LivretController::class, 'getAllLivretModules']);
         /* Wifi */
-        Route::post('module/wifi', [App\Http\Controllers\ModuleWifiController::class, 'addModuleWifi']);
-        Route::get('module/wifi/{id}', [App\Http\Controllers\ModuleWifiController::class, 'deleteModuleWifi']);
+        Route::post('module/wifi', [App\Http\Controllers\ModulesController\ModuleWifiController::class, 'addModuleWifi']);
+        Route::delete('module/wifi/{id}', [App\Http\Controllers\ModulesController\ModuleWifiController::class, 'deleteModuleWifi']);
 
         /* Digicode */
-        Route::post('module/digicode', [App\Http\Controllers\ModuleDigicodeController::class, 'addModuleDigicode']);
-        Route::get('module/digicode/{id}', [App\Http\Controllers\ModuleDigicodeController::class, 'deleteModuleDigicode']);
+        Route::post('module/digicode', [App\Http\Controllers\ModulesController\ModuleDigicodeController::class, 'addModuleDigicode']);
+        Route::delete('module/digicode/{id}', [App\Http\Controllers\ModulesController\ModuleDigicodeController::class, 'deleteModuleDigicode']);
 
         /* Utils phone */
-        Route::post('module/utils_phone', [App\Http\Controllers\ModuleUtilsPhoneController::class, 'addModuleUtilsPhone']);
-        Route::get('module/utils_phone/{id}', [App\Http\Controllers\ModuleUtilsPhoneController::class, 'deleteModuleUtilsPhone']);
+        Route::post('module/utils_phone', [App\Http\Controllers\ModulesController\ModuleUtilsPhoneController::class, 'addModuleUtilsPhone']);
+        Route::delete('module/utils_phone/{id}', [App\Http\Controllers\ModulesController\ModuleUtilsPhoneController::class, 'deleteModuleUtilsPhone']);
 
         /* Utils infos */
-        Route::post('module/utils_infos', [App\Http\Controllers\ModuleUtilsInfoController::class, 'addModuleUtilsInfos']);
-        Route::get('module/utils_infos/{id}', [App\Http\Controllers\ModuleUtilsInfoController::class, 'deleteModuleUtilsInfos']);
+        Route::post('module/utils_infos', [App\Http\Controllers\ModulesController\ModuleUtilsInfoController::class, 'addModuleUtilsInfos']);
+        Route::delete('module/utils_infos/{id}', [App\Http\Controllers\ModulesController\ModuleUtilsInfoController::class, 'deleteModuleUtilsInfos']);
 
         /* Start info */
-        Route::post('module/start_info', [App\Http\Controllers\ModuleStartInfoController::class, 'addModuleStartInfo']);
-        Route::get('module/start_info/{id}', [App\Http\Controllers\ModuleStartInfoController::class, 'deleteModuleStartInfo']);
+        Route::post('module/start_info', [App\Http\Controllers\ModulesController\ModuleStartInfoController::class, 'addModuleStartInfo']);
+        Route::delete('module/start_info/{id}', [App\Http\Controllers\ModulesController\ModuleStartInfoController::class, 'deleteModuleStartInfo']);
 
         /* End info */
-        Route::post('module/end_info', [App\Http\Controllers\ModuleEndInfoController::class, 'addModuleEndInfo']);
-        Route::get('module/end_info/{id}', [App\Http\Controllers\ModuleEndInfoController::class, 'deleteModuleEndInfo']);
+        Route::post('module/end_info', [App\Http\Controllers\ModulesController\ModuleEndInfoController::class, 'addModuleEndInfo']);
+        Route::delete('module/end_info/{id}', [App\Http\Controllers\ModulesController\ModuleEndInfoController::class, 'deleteModuleEndInfo']);
 
         /* Home Infos */
-        Route::post('module/home_infos', [App\Http\Controllers\ModuleHomeInfoController::class, 'addModuleHomeInfos']);
+        Route::post('module/home_infos', [App\Http\Controllers\ModulesController\ModuleHomeInfoController::class, 'addModuleHomeInfos']);
 
         /* Places groups */
-        Route::post('module/places_groups', [App\Http\Controllers\ModulePlaceGroupController::class, 'addModulePlacesGroups']);
-        Route::get('module/places_groups/{id}', [App\Http\Controllers\ModulePlaceGroupController::class, 'deleteModulePlacesGroups']);
+        Route::get('module/places_groups', [App\Http\Controllers\ModulesController\ModulePlaceGroupController::class, 'getPlacesGroups']);
+        Route::post('module/places_groups', [App\Http\Controllers\ModulesController\ModulePlaceGroupController::class, 'addModulePlacesGroups']);
+        Route::delete('module/places_groups/{id}', [App\Http\Controllers\ModulesController\ModulePlaceGroupController::class, 'deleteModulePlacesGroups']);
 
         /* Nearby Places */
-        Route::post('module/nearby_places', [App\Http\Controllers\ModuleNearbyPlaceController::class, 'addModuleNearbyPlaces']);
-        Route::get('module/nearby_places/{id}', [App\Http\Controllers\ModuleNearbyPlaceController::class, 'deleteModuleNearbyPlaces']);
-
+        Route::post('module/nearby_places', [App\Http\Controllers\ModulesController\ModuleNearbyPlaceController::class, 'addModuleNearbyPlaces']);
+        Route::delete('module/nearby_places/{id}', [App\Http\Controllers\ModulesController\ModuleNearbyPlaceController::class, 'deleteModuleNearbyPlaces']);
         /* Module order */
         Route::post('/update-order', [App\Http\Controllers\ModulesController\ModuleController::class, 'updateOrder']);
 
