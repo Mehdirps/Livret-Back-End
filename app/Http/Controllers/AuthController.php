@@ -9,8 +9,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -26,10 +24,6 @@ class AuthController extends Controller
 
         $user = auth()->user();
         $livret = $user->livret;
-
-        if ($user->role == 'admin') {
-            return redirect()->route('admin.index');
-        }
 
         if (!$user->email_verified_at) {
             auth()->logout();
