@@ -64,3 +64,43 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Déploiement sur o2switch
+
+## Étapes pour déployer l'application
+
+1. **Préparer votre application** :
+   - Assurez-vous que votre application est prête pour la production.
+
+2. **Configurer la base de données** :
+   - Connectez-vous à votre cPanel sur o2switch.
+   - Allez dans la section "Bases de données MySQL".
+   - Créez une nouvelle base de données et un nouvel utilisateur MySQL.
+   - Associez l'utilisateur à la base de données avec tous les privilèges.
+
+3. **Déployer votre application** :
+   - Utilisez un client FTP (comme FileZilla) pour télécharger les fichiers de votre application sur le serveur.
+   - Placez les fichiers dans le répertoire approprié (par exemple, `public_html`).
+
+4. **Configurer les variables d'environnement** :
+   - Créez un fichier `.env` dans le répertoire de votre application sur le serveur.
+   - Ajoutez les variables d'environnement nécessaires, y compris les informations de connexion à la base de données.
+
+5. **Installer les dépendances** :
+   - Connectez-vous à votre serveur via SSH.
+   - Naviguez jusqu'au répertoire de votre application.
+   - Exécutez `npm install` ou `yarn install` pour installer les dépendances.
+
+6. **Démarrer votre application** :
+   - Utilisez un gestionnaire de processus comme PM2 pour démarrer et gérer votre application Node.js.
+   - Exécutez `pm2 start app.js` (ou le fichier principal de votre application).
+
+## Exemple de fichier .env
+
+```env
+DB_HOST=localhost
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=your_db_name
+PORT=3000
+// ...autres variables d'environnement...
