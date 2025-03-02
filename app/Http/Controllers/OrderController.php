@@ -9,17 +9,34 @@ use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Class OrderController
+ *
+ * Contrôleur responsable de la gestion des commandes des utilisateurs et de l'envoi d'e-mails de confirmation.
+ * Permet de récupérer les commandes d'un utilisateur et d'envoyer un e-mail de confirmation de commande.
+ *
+ * @package App\Http\Controllers
+ */
 class OrderController extends Controller
 {
-
+    /**
+     * Retourne la liste des commandes d'un utilisateur authentifié.
+     *
+     * Cette méthode récupère toutes les commandes passées par un utilisateur, triées par date de création.
+     * Si l'utilisateur n'a aucune commande, une erreur est retournée.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function userOrders()
     {
         $user = JWTAuth::parseToken()->authenticate();
 
+        // Récupérer les commandes de l'utilisateur
         $orders = Order::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Si aucune commande n'est trouvée, renvoyer une erreur
         if ($orders->isEmpty()) {
             return response()->json(['error' => 'Aucune commande trouvée']);
         }
@@ -29,14 +46,26 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Envoie un e-mail de confirmation de commande à l'utilisateur.
+     *
+     * Cette méthode envoie un e-mail avec les détails de la commande après que l'utilisateur ait passé une commande.
+     * Les détails de la commande et de l'utilisateur sont envoyés dans l'e-mail.
+     *
+     * @param Request $request La requête HTTP contenant les détails de la commande.
+     * @return \Illuminate\Http\JsonResponse
+     * @throws Exception
+     */
     public function sendConfirmationEmail(Request $request)
     {
         $orderDetails = $request->all();
 
+        // Extraction des identifiants des produits de la commande
         $productIds = array_map(function ($product) {
             return $product['id'];
         }, $orderDetails['cart']);
 
+        // Création de la commande dans la base de données
         $order = new Order();
         $order->user_id = $orderDetails['user']['id'];
         $order->order_id = $orderDetails['orderId'];
@@ -44,6 +73,7 @@ class OrderController extends Controller
         $order->total_price = $orderDetails['totalAmount'];
         $order->save();
 
+        // Corps de l'e-mail avec les détails de la commande
         $body = '<div style="font-family: Arial, sans-serif; color: #333;">';
         $body .= '<h1 style="color: #4CAF50;">Merci pour votre commande</h1>';
         $body .= '<p>ID de la commande : <strong>' . $orderDetails['orderId'] . '</strong></p>';
@@ -59,6 +89,7 @@ class OrderController extends Controller
         $body .= '</thead>';
         $body .= '<tbody>';
 
+        // Boucle sur les produits dans le panier pour afficher leurs détails
         foreach ($orderDetails['cart'] as $product) {
             $body .= '<tr>';
             $body .= '<td style="border: 1px solid #ddd; padding: 8px;">' . $product['name'] . '</td>';
@@ -90,6 +121,7 @@ class OrderController extends Controller
         $body .= '<p style="color: #666;">Si vous avez des questions, n\'hésitez pas à nous contacter.</p>';
         $body .= '</div>';
 
+        // Envoi de l'e-mail
         $mail = new Email();
         $mail->sendEmail($orderDetails['user']['email'], $body, 'Confirmation de votre commande');
 

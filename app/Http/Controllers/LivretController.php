@@ -9,8 +9,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Class LivretController
+ *
+ * Contrôleur responsable de la gestion des livrets. Permet de créer, afficher, 
+ * mettre à jour les livrets et gérer leur design ainsi que les modules associés.
+ *
+ * @package App\Http\Controllers
+ */
 class LivretController extends Controller
 {
+    /**
+     * Store a newly created livret in the database.
+     *
+     * Cette méthode permet de créer un nouveau livret en fonction des données 
+     * validées dans la requête.
+     *
+     * @param LivretRequest $request La requête contenant les données du livret.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(LivretRequest $request)
     {
         $validatedData = $request->validated();
@@ -38,6 +55,16 @@ class LivretController extends Controller
         return response()->json(['success' => true, 'message' => 'Livret créé avec succès.'], 201);
     }
 
+    /**
+     * Affiche un livret spécifique selon son slug et son ID.
+     *
+     * Cette méthode retourne un livret et ses modules associés en fonction de 
+     * l'ID et du slug passés en paramètre.
+     *
+     * @param string $slug Le slug du livret.
+     * @param int $id L'ID du livret.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($slug, $id)
     {
         $livret = Livret::where('id', $id)->where('slug', $slug)->first();
@@ -95,9 +122,18 @@ class LivretController extends Controller
         }
     }
 
+    /**
+     * Met à jour un livret existant.
+     *
+     * Cette méthode permet de mettre à jour un livret avec les nouvelles données
+     * envoyées dans la requête. Elle prend en compte la mise à jour du logo si
+     * un fichier est envoyé.
+     *
+     * @param LivretRequest $request La requête contenant les données à mettre à jour.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateLivret(LivretRequest $request)
     {
-
         $validatedData = $request->validated();
 
         if (isset($validatedData['livret_id'])) {
@@ -126,7 +162,6 @@ class LivretController extends Controller
         $livret->tripadvisor = $validatedData['tripadvisor'];
 
         if ($request->hasFile('logo')) {
-
             $validatedDataLogo = $request->validate([
                 'logo' => 'mimes:png,jpg,jpeg,webp',
             ]);
@@ -151,6 +186,15 @@ class LivretController extends Controller
         }
     }
 
+    /**
+     * Met à jour le design du texte d'un livret.
+     *
+     * Cette méthode permet de changer la famille de police et la couleur du texte
+     * pour un livret donné. Les changements sont appliqués à l'utilisateur actuel.
+     *
+     * @param Request $request La requête contenant les données du design du texte.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateTextDesign(Request $request)
     {
         $livret = JWTAuth::parseToken()->authenticate()->livret;
@@ -172,6 +216,14 @@ class LivretController extends Controller
         return response()->json(['message' => 'Le design du texte a été mis à jour avec succès', 'livret' => $livret]);
     }
 
+    /**
+     * Retourne tous les modules d'un livret pour l'utilisateur authentifié.
+     *
+     * Cette méthode renvoie tous les modules (comme Wi-Fi, Infos pratiques, etc.) 
+     * associés au livret de l'utilisateur.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllLivretModules()
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -237,22 +289,6 @@ class LivretController extends Controller
                 'icon' => 'bi bi-info-circle',
                 'data' => $livret->utilsInfos,
                 'order' => $livret->utilsInfos[0]->order ?? null
-            ];
-        }
-        if ($livret->placeGroups) {
-            $modules[] = [
-                'type' => ['name' => 'placeGroups', 'title' => 'Groupes de lieux'],
-                'icon' => 'bi bi-geo-alt',
-                'data' => $livret->placeGroups,
-                'order' => null
-            ];
-        }
-        if ($livret->NearbyPlaces) {
-            $modules[] = [
-                'type' => ['name' => 'nearbyPlaces', 'title' => 'Lieux à proximité'],
-                'icon' => 'bi bi-geo-alt',
-                'data' => $livret->NearbyPlaces,
-                'order' => $livret->NearbyPlaces[0]->order ?? null
             ];
         }
 

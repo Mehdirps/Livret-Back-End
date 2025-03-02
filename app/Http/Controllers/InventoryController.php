@@ -6,8 +6,18 @@ use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Contrôleur de gestion des états des lieux.
+ *
+ * Permet d'effectuer les opérations CRUD sur les états des lieux associés à un livret.
+ */
 class InventoryController extends Controller
 {
+    /**
+     * Récupère tous les états des lieux associés au livret de l'utilisateur.
+     *
+     * @return \Illuminate\Http\JsonResponse Réponse JSON contenant les états des lieux.
+     */
     public function inventories()
     {
         $livret = JWTAuth::parseToken()->authenticate()->livret;
@@ -18,16 +28,19 @@ class InventoryController extends Controller
 
         $inventories = Inventory::where('livret_id', $livret->id)->get();
 
-
-        if (!$inventories) {
+        if ($inventories->isEmpty()) {
             return response()->json(['error' => 'Aucun inventaire trouvé']);
         }
 
-        return response()->json([
-            'inventories' => $inventories,
-        ]);
+        return response()->json(['inventories' => $inventories]);
     }
 
+    /**
+     * Ajoute un nouvel état des lieux.
+     *
+     * @param Request $request Requête contenant les informations de l'état des lieux.
+     * @return \Illuminate\Http\JsonResponse Réponse JSON confirmant l'ajout de l'état des lieux.
+     */
     public function addInventory(Request $request)
     {
         $validatedData = $request->validate([
@@ -41,40 +54,31 @@ class InventoryController extends Controller
 
         $inventory = new Inventory;
         $inventory->livret_id = JWTAuth::parseToken()->authenticate()->livret->id;
-        $inventory->start_date = $validatedData['start_date'];
-        $inventory->end_date = $validatedData['end_date'];
-        $inventory->client_name = $validatedData['client_name'];
-        $inventory->status = $validatedData['status'];
-        $inventory->client_comment = $validatedData['client_comment'];
+        $inventory->fill($validatedData);
 
+        // Gestion des fichiers joints
         if ($request->hasFile('attachment_names')) {
-
-            $allowedExtensions = ['png', 'jpg', 'jpeg', 'webp', 'pdf', 'xlsx', 'xls', 'doc', 'docx', 'odt', 'ods', 'ppt', 'pptx'];
-            $files = $request->file('attachment_names');
             $attachments = [];
-            $i = 0;
-
-            foreach ($files as $attachment) {
+            foreach ($request->file('attachment_names') as $key => $attachment) {
                 $extension = $attachment->getClientOriginalExtension();
-                if (in_array(strtolower($extension), $allowedExtensions)) {
-                    $filename = $i . time() . '.' . $extension;
-                    $attachment->move(public_path('assets/uploads/inventory_attachments'), $filename);
-                    $attachments[] = 'assets/uploads/inventory_attachments/' . $filename;
-                    $i++;
-                } else {
-                    return response()->json(['error' => 'Les fichiers doivent être de type png, jpg, jpeg, webp, pdf, xlsx, xls, doc, docx, odt, ods, ppt, pptx']);
-                }
+                $filename = $key . time() . '.' . $extension;
+                $attachment->move(public_path('assets/uploads/inventory_attachments'), $filename);
+                $attachments[] = 'assets/uploads/inventory_attachments/' . $filename;
             }
-
             $inventory->attachment_names = json_encode($attachments);
         }
-
 
         $inventory->save();
 
         return response()->json(['message' => 'L\'état des lieux a été ajouté avec succès']);
     }
 
+    /**
+     * Met à jour le statut d'un état des lieux.
+     *
+     * @param Request $request Requête contenant l'ID de l'état des lieux et son nouveau statut.
+     * @return \Illuminate\Http\JsonResponse Réponse JSON confirmant la mise à jour.
+     */
     public function statusInventory(Request $request)
     {
         $validatedData = $request->validate([
@@ -82,14 +86,24 @@ class InventoryController extends Controller
             'inventory_id' => 'required|integer',
         ]);
 
-
         $inventory = Inventory::find($validatedData['inventory_id']);
+
+        if (!$inventory) {
+            return response()->json(['error' => 'Inventaire introuvable']);
+        }
+
         $inventory->status = $validatedData['status'];
         $inventory->save();
 
-        return response()->json(['message' => 'Le status de l\'état des lieux a été mis à jour avec succès']);
+        return response()->json(['message' => 'Le statut de l\'état des lieux a été mis à jour avec succès']);
     }
 
+    /**
+     * Supprime un état des lieux et ses fichiers joints.
+     *
+     * @param int $id ID de l'état des lieux à supprimer.
+     * @return \Illuminate\Http\JsonResponse Réponse JSON confirmant la suppression.
+     */
     public function deleteInventory($id)
     {
         $inventory = Inventory::find($id);
@@ -98,12 +112,12 @@ class InventoryController extends Controller
             return response()->json(['error' => 'Inventaire introuvable']);
         }
 
-        $attachments = json_decode($inventory->attachment_names);
-
-        if ($attachments) {
-            foreach ($attachments as $attachment) {
-                if (file_exists(public_path($attachment))) {
-                    unlink(public_path($attachment));
+        // Suppression des fichiers joints
+        if ($inventory->attachment_names) {
+            foreach (json_decode($inventory->attachment_names) as $attachment) {
+                $filePath = public_path($attachment);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
                 }
             }
         }
@@ -113,6 +127,12 @@ class InventoryController extends Controller
         return response()->json(['message' => 'L\'état des lieux a été supprimé avec succès']);
     }
 
+    /**
+     * Recherche des états des lieux selon les critères donnés.
+     *
+     * @param Request $request Requête contenant les critères de recherche.
+     * @return \Illuminate\Http\JsonResponse Réponse JSON contenant les états des lieux correspondants.
+     */
     public function searchInventories(Request $request)
     {
         $validatedData = $request->validate([
@@ -122,34 +142,24 @@ class InventoryController extends Controller
             'status' => 'nullable|string|in:in_progress,completed',
         ]);
 
-
-        $client_name = $validatedData['client_name'];
-        $start_date = $validatedData['start_date'];
-        $end_date = $validatedData['end_date'];
-        $status = $validatedData['status'];
-
         $query = Inventory::query();
 
-        if ($client_name) {
-            $query->where('client_name', 'like', '%' . $client_name . '%');
+        if ($validatedData['client_name']) {
+            $query->where('client_name', 'like', '%' . $validatedData['client_name'] . '%');
         }
 
-        if ($start_date) {
-            $query->where('start_date', '>=', $start_date);
+        if ($validatedData['start_date']) {
+            $query->where('start_date', '>=', $validatedData['start_date']);
         }
 
-        if ($end_date) {
-            $query->where('end_date', '<=', $end_date);
+        if ($validatedData['end_date']) {
+            $query->where('end_date', '<=', $validatedData['end_date']);
         }
 
-        if ($status) {
-            $query->where('status', $status);
+        if ($validatedData['status']) {
+            $query->where('status', $validatedData['status']);
         }
 
-        $inventories = $query->get();
-
-        return response()->json([
-            'inventories' => $inventories,
-        ]);
+        return response()->json(['inventories' => $query->get()]);
     }
 }

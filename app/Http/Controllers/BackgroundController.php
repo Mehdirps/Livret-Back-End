@@ -7,8 +7,20 @@ use App\Models\BackgroundGroup;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Contrôleur des arrière-plans.
+ *
+ * Gère les actions liées aux arrière-plans et aux groupes d'arrière-plans :
+ * - Liste des arrière-plans et groupes
+ * - Mise à jour de l'arrière-plan d'un livret
+ */
 class BackgroundController extends Controller
 {
+    /**
+     * Récupère tous les groupes et arrière-plans disponibles.
+     *
+     * @return \Illuminate\Http\JsonResponse Réponse avec les groupes et arrière-plans en cas de succès.
+     */
     public function background()
     {
         $background_groups = BackgroundGroup::all();
@@ -23,6 +35,12 @@ class BackgroundController extends Controller
         ]);
     }
 
+    /**
+     * Met à jour l'arrière-plan d'un livret avec l'arrière-plan sélectionné.
+     *
+     * @param int $id ID de l'arrière-plan sélectionné.
+     * @return \Illuminate\Http\JsonResponse Réponse confirmant la mise à jour ou indiquant une erreur.
+     */
     public function updateBackground($id)
     {
         $background = Background::find($id);
@@ -35,6 +53,9 @@ class BackgroundController extends Controller
         $livret->background = $background->path;
         $livret->save();
 
-        return response()->json(['message' => 'Arrière-plan mis à jour avec succès', 'livret' => $livret]);
+        return response()->json([
+            'message' => 'Arrière-plan mis à jour avec succès',
+            'livret' => $livret,
+        ]);
     }
 }
