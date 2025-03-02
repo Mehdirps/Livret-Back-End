@@ -147,7 +147,7 @@ class LivretController extends Controller
         if (isset($validatedData['livret_id'])) {
             return response()->json(['message' => 'Livret mis à jour avec succès', 'livret' => $livret]);
         } else {
-            return response()->json(['message' => 'Votre livret a été mis à jour avec succès', 'livret' => $livret]);
+            return response()->json(['message' => 'Votre livret a été mis à jour avec succès', 'livret' => $livret], 200);
         }
     }
 

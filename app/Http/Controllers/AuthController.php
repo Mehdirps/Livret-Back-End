@@ -43,7 +43,7 @@ class AuthController extends Controller
             'livret' => $livret
         ];
 
-        return response()->json($response);
+        return response()->json($response, 200);
     }
 
 
@@ -73,7 +73,7 @@ class AuthController extends Controller
         $mail->sendEmail($user->email, $emailBody, 'Merci pour votre inscription !');
 
 
-        return response()->json(['success' => "Votre inscription à été enregistrer avec succès ! Un email de vérification a été envoyé à votre adresse e-mail. Veuillez vérifier votre boite de réception."]);
+        return response()->json(['success' => "Votre inscription à été enregistrer avec succès ! Un email de vérification a été envoyé à votre adresse e-mail. Veuillez vérifier votre boite de réception."], 201);
     }
 
     public function verify($email)
@@ -81,20 +81,20 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'Aucun utilisateur trouvé']);
+            return response()->json(['error' => 'Aucun utilisateur trouvé'], 404);
         }
         if ($user) {
             $user->email_verified_at = now();
             $user->save();
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true], 200);
         }
-        return response()->json(['error' => 'Lien de vérification invalide']);
+        return response()->json(['error' => 'Lien de vérification invalide'], 401);
     }
 
     public function doLogout()
     {
         Auth::logout();
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true], 200);
     }
 
     public function verifyToken()
