@@ -1,0 +1,1088 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mon API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Connexion d'un utilisateur",
+                "description": "Authentifie un utilisateur avec ses identifiants et retourne un token JWT.",
+                "operationId": "e994692db140be3f1bb5f3e2a4133b01",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "first_login": {
+                                            "type": "boolean"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "livret": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Identifiants incorrects"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Inscription d'un utilisateur",
+                "description": "Crée un nouvel utilisateur et envoie un email de vérification.",
+                "operationId": "de1f5e6dc26d12a93cf360d4da998e47",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "etablissement_type": {
+                                        "type": "string",
+                                        "example": "Hôtel"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Inscription réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string",
+                                            "example": "Votre inscription a été enregistrée avec succès..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/verify_email/{email}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Vérification d'email",
+                "description": "Marque l'email d'un utilisateur comme vérifié.",
+                "operationId": "52ba2cee5dbca39146bd28c12f5b6203",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Adresse e-mail de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "user@example.com"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email vérifié avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Utilisateur introuvable"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Déconnexion",
+                "description": "Déconnecte l'utilisateur actuel.",
+                "operationId": "9e421f634d2030e0f9376f1dbfb3cbad",
+                "responses": {
+                    "200": {
+                        "description": "Déconnexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/verify_token": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Validation du token",
+                "description": "Valide un token JWT et retourne les informations utilisateur si valide.",
+                "operationId": "ce99b87788731324d875532f52711809",
+                "responses": {
+                    "200": {
+                        "description": "Token valide",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token invalide"
+                    }
+                }
+            }
+        },
+        "/api/auth/update_password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Mise à jour du mot de passe",
+                "description": "Met à jour le mot de passe de l'utilisateur authentifié.",
+                "operationId": "af190dfba62ae76135c57df046aed276",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "oldpassword"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Votre mot de passe a été mis à jour avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/dashboard/background": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Récupère tous les groupes et arrière-plans disponibles.",
+                "description": "Récupère tous les groupes et arrière-plans disponibles.",
+                "operationId": "49c538684827e4255048a81a9c35c5e2",
+                "responses": {
+                    "200": {
+                        "description": "Liste des groupes et arrière-plans disponibles."
+                    },
+                    "404": {
+                        "description": "Groupe d'arrière-plan introuvable."
+                    }
+                }
+            }
+        },
+        "/dashboard/background/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Met à jour l'arrière-plan d'un livret avec l'arrière-plan sélectionné.",
+                "description": "Met à jour l'arrière-plan d'un livret avec l'arrière-plan sélectionné.",
+                "operationId": "e96d053f9a5c952f3a967c246234770d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Arrière-plan mis à jour avec succès."
+                    },
+                    "404": {
+                        "description": "Arrière-plan introuvable."
+                    }
+                }
+            }
+        },
+        "/api": {
+            "get": {
+                "tags": [
+                    "Welcome"
+                ],
+                "summary": "Message de bienvenue",
+                "operationId": "ae0c36d5f2fddfa1bf0ad292bb2cf8f0",
+                "responses": {
+                    "200": {
+                        "description": "Message de bienvenue"
+                    }
+                }
+            }
+        },
+        "/dashboard/inventories": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Récupère tous les états des lieux associés au livret de l'utilisateur.",
+                "description": "Récupère tous les états des lieux associés au livret de l'utilisateur.",
+                "operationId": "1a093b6ca626d23b13d0a9c88ef1e692",
+                "responses": {
+                    "200": {
+                        "description": "Liste des états des lieux."
+                    },
+                    "404": {
+                        "description": "Aucun inventaire trouvé."
+                    }
+                }
+            }
+        },
+        "/dashboard/inventory": {
+            "post": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Ajoute un nouvel état des lieux.",
+                "description": "Ajoute un nouvel état des lieux.",
+                "operationId": "f8282855b949d9f9dd4a899b958b0c2d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "start_date",
+                                    "end_date",
+                                    "client_name",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "start_date": {
+                                        "description": "Date de début de l'état des lieux.",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "end_date": {
+                                        "description": "Date de fin de l'état des lieux.",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "client_name": {
+                                        "description": "Nom du client.",
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "description": "Statut de l'état des lieux.",
+                                        "type": "string"
+                                    },
+                                    "client_comment": {
+                                        "description": "Commentaire du client.",
+                                        "type": "string"
+                                    },
+                                    "attachment_names": {
+                                        "description": "Fichiers joints.",
+                                        "type": "array",
+                                        "items": {
+                                            "description": "Fichiers joints.",
+                                            "type": "string",
+                                            "format": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "L'état des lieux a été ajouté avec succès."
+                    }
+                }
+            }
+        },
+        "/dashboard/inventory/status": {
+            "post": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Met à jour le statut d'un état des lieux.",
+                "description": "Met à jour le statut d'un état des lieux.",
+                "operationId": "ee659238bac8fa612ee2f706b616d210",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status",
+                                    "inventory_id"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "description": "Nouveau statut de l'état des lieux.",
+                                        "type": "string"
+                                    },
+                                    "inventory_id": {
+                                        "description": "ID de l'état des lieux.",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Le statut de l'état des lieux a été mis à jour avec succès."
+                    }
+                }
+            }
+        },
+        "/dashboard/inventory/{id}": {
+            "delete": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Supprime un état des lieux et ses fichiers joints.",
+                "description": "Supprime un état des lieux et ses fichiers joints.",
+                "operationId": "5601b8aed8afdbe835996a5d0c8b532e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "L'état des lieux a été supprimé avec succès."
+                    },
+                    "404": {
+                        "description": "Inventaire introuvable."
+                    }
+                }
+            }
+        },
+        "/dashboard/inventories/search": {
+            "post": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Recherche des états des lieux selon les critères donnés.",
+                "description": "Recherche des états des lieux selon les critères donnés.",
+                "operationId": "03dbf1a1675c1983d85c48785155b1f4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client_name",
+                                    "start_date",
+                                    "end_date",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "client_name": {
+                                        "description": "Nom du client.",
+                                        "type": "string"
+                                    },
+                                    "start_date": {
+                                        "description": "Date de début de l'état des lieux.",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "end_date": {
+                                        "description": "Date de fin de l'état des lieux.",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "status": {
+                                        "description": "Statut de l'état des lieux.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Liste des états des lieux correspondants."
+                    }
+                }
+            }
+        },
+        "/dashboard/first_login": {
+            "post": {
+                "tags": [
+                    "Livret"
+                ],
+                "summary": "Crée un nouveau livret pour l'utilisateur authentifié.",
+                "description": "Crée un nouveau livret pour l'utilisateur authentifié.",
+                "operationId": "store",
+                "requestBody": {
+                    "description": "Données du livret à créer",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "livret_name",
+                                    "establishment_type",
+                                    "establishment_name",
+                                    "establishment_address",
+                                    "establishment_phone",
+                                    "establishment_email",
+                                    "establishment_website"
+                                ],
+                                "properties": {
+                                    "livret_name": {
+                                        "type": "string",
+                                        "example": "Mon livret"
+                                    },
+                                    "establishment_type": {
+                                        "type": "string",
+                                        "example": "Hôtel"
+                                    },
+                                    "establishment_name": {
+                                        "type": "string",
+                                        "example": "Hôtel de la plage"
+                                    },
+                                    "establishment_address": {
+                                        "type": "string",
+                                        "example": "12 rue de la plage"
+                                    },
+                                    "establishment_phone": {
+                                        "type": "string",
+                                        "example": "0123456789"
+                                    },
+                                    "establishment_email": {
+                                        "type": "string",
+                                        "example": "email@email.com"
+                                    },
+                                    "establishment_website": {
+                                        "type": "string",
+                                        "example": "https://www.hotelplage.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Livret créé avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livret créé avec succès."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "livret_name": [
+                                                    "Le champ nom du livret est obligatoire."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur interne du serveur.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server Error."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/livret/{slug}/{id}": {
+            "get": {
+                "tags": [
+                    "Livret"
+                ],
+                "summary": "Affiche un livret spécifique selon son slug et son ID.",
+                "description": "Affiche un livret spécifique selon son slug et son ID.",
+                "operationId": "show",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Le slug du livret.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'ID du livret.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Livret trouvé.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "livret": {
+                                            "type": "object"
+                                        },
+                                        "modules": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Livret introuvable.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Ce livret n'existe pas."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboard/profile/update_livret": {
+            "post": {
+                "tags": [
+                    "Livret"
+                ],
+                "summary": "Met à jour un livret existant.",
+                "description": "Met à jour un livret existant.",
+                "operationId": "195647b5ef27acfd2f5f36aba6a1eea2",
+                "requestBody": {
+                    "description": "Données du livret à mettre à jour",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "livret_name",
+                                    "establishment_type",
+                                    "establishment_name",
+                                    "establishment_address",
+                                    "establishment_phone",
+                                    "establishment_email",
+                                    "establishment_website"
+                                ],
+                                "properties": {
+                                    "livret_name": {
+                                        "type": "string",
+                                        "example": "Mon livret"
+                                    },
+                                    "establishment_type": {
+                                        "type": "string",
+                                        "example": "Hôtel"
+                                    },
+                                    "establishment_name": {
+                                        "type": "string",
+                                        "example": "Hôtel de la plage"
+                                    },
+                                    "establishment_address": {
+                                        "type": "string",
+                                        "example": "12 rue de la plage"
+                                    },
+                                    "establishment_phone": {
+                                        "type": "string",
+                                        "example": "0123456789"
+                                    },
+                                    "establishment_email": {
+                                        "type": "string",
+                                        "example": "email@email.com"
+                                    },
+                                    "establishment_website": {
+                                        "type": "string",
+                                        "example": "https://www.hotelplage.com"
+                                    },
+                                    "facebook": {
+                                        "type": "string",
+                                        "example": "https://www.facebook.com/hotelplage"
+                                    },
+                                    "twitter": {
+                                        "type": "string",
+                                        "example": "https://www.twitter.com/hotelplage"
+                                    },
+                                    "instagram": {
+                                        "type": "string",
+                                        "example": "https://www.instagram.com/hotelplage"
+                                    },
+                                    "linkedin": {
+                                        "type": "string",
+                                        "example": "https://www.linkedin.com/hotelplage"
+                                    },
+                                    "tripadvisor": {
+                                        "type": "string",
+                                        "example": "https://www.tripadvisor.com/hotelplage"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Livret mis à jour avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Livret mis à jour avec succès."
+                                        },
+                                        "livret": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Livret introuvable.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Livret introuvable."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "livret_name": [
+                                                    "Le champ nom du livret est obligatoire."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur interne du serveur.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server Error."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/dashboard/profile/update_text_design": {
+            "post": {
+                "tags": [
+                    "Livret"
+                ],
+                "summary": "Met à jour le design du texte d'un livret.",
+                "description": "Met à jour le design du texte d'un livret.",
+                "operationId": "00cbf880fd2a69f5fa4eabcc9b15a99b",
+                "requestBody": {
+                    "description": "Design du texte à mettre à jour",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fontFamily",
+                                    "fontColor"
+                                ],
+                                "properties": {
+                                    "fontFamily": {
+                                        "type": "string",
+                                        "example": "Arial"
+                                    },
+                                    "fontColor": {
+                                        "type": "string",
+                                        "example": "#000000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Le design du texte a été mis à jour avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Le design du texte a été mis à jour avec succès"
+                                        },
+                                        "livret": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "fontFamily": [
+                                                    "Le champ famille de police est obligatoire."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur interne du serveur.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server Error."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard"
+        },
+        {
+            "name": "Welcome",
+            "description": "Welcome"
+        },
+        {
+            "name": "Livret",
+            "description": "Livret"
+        }
+    ]
+}

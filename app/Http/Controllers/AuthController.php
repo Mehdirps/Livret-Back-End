@@ -31,6 +31,39 @@ class AuthController extends Controller
      * @param LoginRequest $request Requête contenant les données de connexion validées.
      * @return \Illuminate\Http\JsonResponse Réponse avec le token et les informations utilisateur en cas de succès.
      */
+    /**
+     * Authentifie un utilisateur et génère un token JWT.
+     *
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Connexion d'un utilisateur",
+     *     description="Authentifie un utilisateur avec ses identifiants et retourne un token JWT.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Connexion réussie",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="first_login", type="boolean"),
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="user", type="object"),
+     *             @OA\Property(property="livret", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Identifiants incorrects"
+     *     )
+     * )
+     */
     public function doLogin(LoginRequest $request)
     {
         $credentials = $request->validated();
@@ -69,6 +102,35 @@ class AuthController extends Controller
      * @param RegisterRequest $request Requête contenant les données d'inscription validées.
      * @return \Illuminate\Http\JsonResponse Réponse confirmant l'inscription et l'envoi de l'email de vérification.
      */
+    /**
+     * Enregistre un nouvel utilisateur.
+     *
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"Auth"},
+     *     summary="Inscription d'un utilisateur",
+     *     description="Crée un nouvel utilisateur et envoie un email de vérification.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="first_name", type="string", example="John"),
+     *             @OA\Property(property="last_name", type="string", example="Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="password123"),
+     *             @OA\Property(property="etablissement_type", type="string", example="Hôtel")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Inscription réussie",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="string", example="Votre inscription a été enregistrée avec succès...")
+     *         )
+     *     )
+     * )
+     */
     public function doRegister(RegisterRequest $request)
     {
         $validatedData = $request->validated();
@@ -104,6 +166,32 @@ class AuthController extends Controller
      * @param string $email Adresse e-mail à vérifier.
      * @return \Illuminate\Http\JsonResponse Réponse confirmant ou refusant la vérification de l'email.
      */
+    /**
+     * Vérifie l'adresse e-mail d'un utilisateur.
+     *
+     * @OA\Get(
+     *     path="/api/auth/verify_email/{email}",
+     *     tags={"Auth"},
+     *     summary="Vérification d'email",
+     *     description="Marque l'email d'un utilisateur comme vérifié.",
+     *     @OA\Parameter(
+     *         name="email",
+     *         in="path",
+     *         required=true,
+     *         description="Adresse e-mail de l'utilisateur",
+     *         @OA\Schema(type="string", format="email", example="user@example.com")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email vérifié avec succès",
+     *         @OA\JsonContent(@OA\Property(property="success", type="boolean", example=true))
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Utilisateur introuvable"
+     *     )
+     * )
+     */
     public function verify($email)
     {
         $user = User::where('email', $email)->first();
@@ -123,6 +211,21 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse Réponse confirmant la déconnexion.
      */
+    /**
+     * Déconnecte l'utilisateur authentifié.
+     *
+     * @OA\GET(
+     *     path="/api/auth/logout",
+     *     tags={"Auth"},
+     *     summary="Déconnexion",
+     *     description="Déconnecte l'utilisateur actuel.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Déconnexion réussie",
+     *         @OA\JsonContent(@OA\Property(property="success", type="boolean", example=true))
+     *     )
+     * )
+     */
     public function doLogout()
     {
         Auth::logout();
@@ -133,6 +236,28 @@ class AuthController extends Controller
      * Vérifie la validité du token JWT.
      *
      * @return \Illuminate\Http\JsonResponse Réponse avec les informations utilisateur si le token est valide.
+     */
+    /**
+     * Vérifie la validité du token JWT.
+     *
+     * @OA\Get(
+     *     path="/api/auth/verify_token",
+     *     tags={"Auth"},
+     *     summary="Validation du token",
+     *     description="Valide un token JWT et retourne les informations utilisateur si valide.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token valide",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Token invalide"
+     *     )
+     * )
      */
     public function verifyToken()
     {
@@ -152,6 +277,34 @@ class AuthController extends Controller
      *
      * @param Request $request Requête contenant les anciens et nouveaux mots de passe.
      * @return \Illuminate\Http\JsonResponse Réponse confirmant la mise à jour du mot de passe ou indiquant une erreur.
+     */
+    /**
+     * Met à jour le mot de passe de l'utilisateur.
+     *
+     * @OA\Post(
+     *     path="/api/auth/update_password",
+     *     tags={"Auth"},
+     *     summary="Mise à jour du mot de passe",
+     *     description="Met à jour le mot de passe de l'utilisateur authentifié.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="old_password", type="string", format="password", example="oldpassword"),
+     *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="newpassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Mot de passe mis à jour",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string", example="Votre mot de passe a été mis à jour avec succès"))
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erreur de validation"
+     *     )
+     * )
      */
     public function updatePassword(Request $request)
     {

@@ -28,6 +28,62 @@ class LivretController extends Controller
      * @param LivretRequest $request La requête contenant les données du livret.
      * @return \Illuminate\Http\JsonResponse
      */
+    /**
+     * Crée un nouveau livret pour l'utilisateur authentifié.
+     *
+     * @OA\Post(
+     *    path="/dashboard/first_login",
+     *   tags={"Livret"},
+     *  summary="Crée un nouveau livret pour l'utilisateur authentifié.",
+     *  description="Crée un nouveau livret pour l'utilisateur authentifié.",
+     * operationId="store",
+     * @OA\RequestBody(
+     *   required=true,
+     * description="Données du livret à créer",
+     * @OA\JsonContent(
+     *   required={"livret_name", "establishment_type", "establishment_name", "establishment_address", "establishment_phone", "establishment_email", "establishment_website"},
+     * @OA\Property(property="livret_name", type="string", example="Mon livret"),
+     * @OA\Property(property="establishment_type", type="string", example="Hôtel"),
+     * @OA\Property(property="establishment_name", type="string", example="Hôtel de la plage"),
+     * @OA\Property(property="establishment_address", type="string", example="12 rue de la plage"),
+     * @OA\Property(property="establishment_phone", type="string", example="0123456789"),
+     * @OA\Property(property="establishment_email", type="string", example="email@email.com"),
+     * @OA\Property(property="establishment_website", type="string", example="https://www.hotelplage.com"),
+     * ),
+     * ),
+     * @OA\Response(
+     *  response=201,
+     * description="Livret créé avec succès.",
+     * @OA\JsonContent(
+     * @OA\Property(property="success", type="boolean", example=true),
+     * @OA\Property(property="message", type="string", example="Livret créé avec succès."),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=422,
+     * description="Erreur de validation des données.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="The given data was invalid."),
+     * @OA\Property(property="errors", type="object", example={"livret_name": {"Le champ nom du livret est obligatoire."}}),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Non authentifié.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated."),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Erreur interne du serveur.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Server Error."),
+     * ),
+     * ),
+     * security={{"bearerAuth": {}}},
+     * )
+     */
     public function store(LivretRequest $request)
     {
         $validatedData = $request->validated();
@@ -64,6 +120,50 @@ class LivretController extends Controller
      * @param string $slug Le slug du livret.
      * @param int $id L'ID du livret.
      * @return \Illuminate\Http\JsonResponse
+     */
+    /**
+     * Affiche un livret spécifique selon son slug et son ID.
+     * 
+     * @OA\Get(
+     * path="/livret/{slug}/{id}",
+     * tags={"Livret"},
+     * summary="Affiche un livret spécifique selon son slug et son ID.",
+     * description="Affiche un livret spécifique selon son slug et son ID.",
+     * operationId="show",
+     * @OA\Parameter(
+     * name="slug",
+     * in="path",
+     * description="Le slug du livret.",
+     * required=true,
+     * @OA\Schema(
+     * type="string",
+     * ),
+     * ),
+     * @OA\Parameter(
+     * name="id",
+     * in="path",
+     * description="L'ID du livret.",
+     * required=true,
+     * @OA\Schema(
+     * type="integer",
+     * ),
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Livret trouvé.",
+     * @OA\JsonContent(
+     * @OA\Property(property="livret", type="object"),
+     * @OA\Property(property="modules", type="object"),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Livret introuvable.",
+     * @OA\JsonContent(
+     * @OA\Property(property="error", type="string", example="Ce livret n'existe pas."),
+     * ),
+     * ),
+     * )
      */
     public function show($slug, $id)
     {
@@ -132,6 +232,74 @@ class LivretController extends Controller
      * @param LivretRequest $request La requête contenant les données à mettre à jour.
      * @return \Illuminate\Http\JsonResponse
      */
+    /**
+     * Met à jour un livret existant.
+     * 
+     * @OA\Post(
+     * path="/dashboard/profile/update_livret",
+     * tags={"Livret"},
+     * summary="Met à jour un livret existant.",
+     * description="Met à jour un livret existant.",
+     * @OA\RequestBody(
+     * required=true,
+     * description="Données du livret à mettre à jour",
+     * @OA\JsonContent(
+     *  required={"livret_name", "establishment_type", "establishment_name", "establishment_address", "establishment_phone", "establishment_email", "establishment_website"},
+     * @OA\Property(property="livret_name", type="string", example="Mon livret"),
+     * @OA\Property(property="establishment_type", type="string", example="Hôtel"),
+     * @OA\Property(property="establishment_name", type="string", example="Hôtel de la plage"),
+     * @OA\Property(property="establishment_address", type="string", example="12 rue de la plage"),
+     * @OA\Property(property="establishment_phone", type="string", example="0123456789"),
+     * @OA\Property(property="establishment_email", type="string", example="email@email.com"),
+     * @OA\Property(property="establishment_website", type="string", example="https://www.hotelplage.com"),
+     * @OA\Property(property="facebook", type="string", example="https://www.facebook.com/hotelplage"),
+     * @OA\Property(property="twitter", type="string", example="https://www.twitter.com/hotelplage"),
+     * @OA\Property(property="instagram", type="string", example="https://www.instagram.com/hotelplage"),
+     * @OA\Property(property="linkedin", type="string", example="https://www.linkedin.com/hotelplage"),
+     * @OA\Property(property="tripadvisor", type="string", example="https://www.tripadvisor.com/hotelplage"),
+     * @OA\Property(property="logo", type="string", format="binary"),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Livret mis à jour avec succès.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Livret mis à jour avec succès."),
+     * @OA\Property(property="livret", type="object"),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Livret introuvable.",
+     * @OA\JsonContent(
+     * @OA\Property(property="error", type="string", example="Livret introuvable."),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=422,
+     * description="Erreur de validation des données.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="The given data was invalid."),
+     * @OA\Property(property="errors", type="object", example={"livret_name": {"Le champ nom du livret est obligatoire."}}),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Non authentifié.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated."),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Erreur interne du serveur.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Server Error."),
+     * ),
+     * ),
+     * security={{"bearerAuth": {}}},
+     * )
+     */
     public function updateLivret(LivretRequest $request)
     {
         $validatedData = $request->validated();
@@ -194,6 +362,56 @@ class LivretController extends Controller
      *
      * @param Request $request La requête contenant les données du design du texte.
      * @return \Illuminate\Http\JsonResponse
+     */
+    /**
+     * Met à jour le design du texte d'un livret.
+     * 
+     * @OA\Post(
+     * path="/dashboard/profile/update_text_design",
+     * tags={"Livret"},
+     * summary="Met à jour le design du texte d'un livret.",
+     * description="Met à jour le design du texte d'un livret.",
+     * @OA\RequestBody(
+     * required=true,
+     * description="Design du texte à mettre à jour",
+     * @OA\JsonContent(
+     * required={"fontFamily", "fontColor"},
+     * @OA\Property(property="fontFamily", type="string", example="Arial"),
+     * @OA\Property(property="fontColor", type="string", example="#000000"),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Le design du texte a été mis à jour avec succès.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Le design du texte a été mis à jour avec succès"),
+     * @OA\Property(property="livret", type="object"),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=422,
+     * description="Erreur de validation des données.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="The given data was invalid."),
+     * @OA\Property(property="errors", type="object", example={"fontFamily": {"Le champ famille de police est obligatoire."}}),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=401,
+     * description="Non authentifié.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Unauthenticated."),
+     * ),
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Erreur interne du serveur.",
+     * @OA\JsonContent(
+     * @OA\Property(property="message", type="string", example="Server Error."),
+     * ),
+     * ),
+     * security={{"bearerAuth": {}}},
+     * )
      */
     public function updateTextDesign(Request $request)
     {
