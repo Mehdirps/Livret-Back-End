@@ -1,4 +1,4 @@
-- Erreur 404 verife email
+Erreur 404 verife email
 changement ordre module
 - récuperer facture stripe pour afficher dans commande
 mettre produit dans facture

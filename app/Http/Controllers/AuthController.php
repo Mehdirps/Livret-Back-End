@@ -146,7 +146,7 @@ class AuthController extends Controller
             <h1>Bienvenue sur notre site web</h1>
            <p>Merci de vous être inscrit sur notre site web. Veuillez cliquer sur le lien ci-dessous pour vérifier votre adresse e-mail et compléter votre inscription :</p>
            <p>
-              <a href="' . url('/auth/verify_email/' . $user->email) . '">Vérifier l\'Email</a>
+              <a href="' . url('/api/auth/verify_email/' . $user->email) . '">Vérifier l\'Email</a>
            </p>
            <p>Si vous ne vous êtes pas inscrit sur notre site web, veuillez ignorer cet email.</p>
            <p>Meilleures salutations,</p>
