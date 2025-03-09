@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product; // Assurez-vous d'importer le modèle Product
 
 class Order extends Model
 {
@@ -37,5 +38,21 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the products for the order.
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Get the products for the order using product_ids.
+     */
+    public function getProducts()
+    {
+        return Product::whereIn('id', $this->product_ids)->get();
     }
 }

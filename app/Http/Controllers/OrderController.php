@@ -36,14 +36,18 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        foreach ($orders as $order) {
+            // Assurez-vous que product_ids est un tableau
+            $order->product_ids = json_decode($order->product_ids, true);
+            $order->products = $order->getProducts();
+        }
+
         // Si aucune commande n'est trouvée, renvoyer une erreur
         if ($orders->isEmpty()) {
             return response()->json(['error' => 'Aucune commande trouvée']);
         }
 
-        return response()->json([
-            'orders' => $orders,
-        ]);
+        return response()->json(['orders' => $orders]);
     }
 
     /**
