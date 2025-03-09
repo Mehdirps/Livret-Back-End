@@ -203,7 +203,7 @@ class AuthController extends Controller
         $user->email_verified_at = now();
         $user->save();
 
-        return response()->json(['success' => true], 200);
+        return redirect()->away('https://herbeginfos.fr/connexion');
     }
 
     /**
