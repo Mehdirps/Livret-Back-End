@@ -52,6 +52,7 @@ class AuthTest extends TestCase
     {
         $response = $this->get('/api/auth/verify_email/test@example.com');
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
+        $response->assertRedirect('https://herbeginfos.fr/connexion');
     }
 }
