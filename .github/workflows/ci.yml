@@ -40,9 +40,10 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-    - name: Add passphrase to SSH key
+    - name: Start ssh-agent and add SSH key
       run: |
-        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add ~/.ssh/id_rsa
+        eval "$(ssh-agent -s)"  # Démarrer l'agent SSH
+        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add ~/.ssh/id_rsa  # Ajouter la clé SSH avec la passphrase
 
     - name: Deploy to O2switch
       run: |
