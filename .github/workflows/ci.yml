@@ -58,3 +58,4 @@ jobs:
     - name: Deploy to O2switch
       run: |
         ssh -v rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
+        
