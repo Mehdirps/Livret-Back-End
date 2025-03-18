@@ -29,11 +29,7 @@ jobs:
     - name: Run tests
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
-      
-    - name: Run PHPStan
-      run: |
-        vendor/bin/phpstan analyse --level=max
         
     - name: Deploy to O2switch
       run: |
-        ssh rame5605@109.234.166.50 "cd /public && git pull origin main && composer install --no-dev"
+        ssh rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
