@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main  # Ou la branche principale de ton projet
+      - main
   pull_request:
     branches:
-      - main  # Ou la branche principale de ton projet
+      - main
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'  # Choisir la version de PHP que tu utilises
-        extensions: mbstring, bcmath, curl, xml  # Extensions PHP nécessaires
+        php-version: '8.2'
+        extensions: mbstring, bcmath, curl, xml
 
     - name: Install dependencies
       run: |
@@ -29,6 +29,10 @@ jobs:
     - name: Run tests
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
+      
+    - name: Run PHPStan
+      run: |
+        vendor/bin/phpstan analyse app --level=max
         
     - name: Deploy to O2switch
       run: |
