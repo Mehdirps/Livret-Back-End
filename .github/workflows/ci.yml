@@ -34,11 +34,14 @@ jobs:
     #   run: |
     #     vendor/bin/phpstan analyse app --level=max
 
-    - name: Set up SSH key and passphrase
+    - name: Set up SSH key
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Charge la clé privée du secret GitHub
+
+    - name: Add passphrase to SSH key
+      run: |
+        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add -K ~/.ssh/id_rsa  # Ajoute la passphrase via un secret
 
     - name: Deploy to O2switch
       run: |
