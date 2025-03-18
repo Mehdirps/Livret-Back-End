@@ -29,25 +29,11 @@ jobs:
     - name: Run tests
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
-
-    - name: Install sshpass
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y sshpass
-
-    - name: Set up SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-
-    - name: Start ssh-agent and add SSH key
-      run: |
-        eval "$(ssh-agent -s)"  # Start the SSH agent
-        ssh-add ~/.ssh/id_rsa  # Add the private key
-
+      
+    # - name: Run PHPStan
+    #   run: |
+    #     vendor/bin/phpstan analyse app --level=max
+        
     - name: Deploy to O2switch
-      env:
-        PASSWORD: ${{ secrets.O2SWITCH_PASSWORD }}
       run: |
-        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
+        ssh -i ~/.ssh/id_rsa rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
