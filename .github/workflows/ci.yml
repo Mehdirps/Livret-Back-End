@@ -34,12 +34,28 @@ jobs:
     #   run: |
     #     vendor/bin/phpstan analyse app --level=max
 
-    - name: Deploy to O2switch via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4
-      with:
-        server: choucas.o2switch.net
-        username: rame5605
-        password: Y6ht-DAqD-QD3)
-        local-dir: ./build
-        server-dir: /home/rame5605/api.herbeginfos.fr
+    - name: Check connectivity
+      run: |
+        ping -c 4 109.234.166.50
+
+    - name: Create .ssh directory
+      run: |
+        mkdir -p $HOME/.ssh
+        echo "Directory created: $HOME/.ssh"
+
+    - name: Add SSH host to known_hosts
+      run: |
+        ssh-keyscan -v -H 109.234.166.50 >> $HOME/.ssh/known_hosts
+        echo "SSH host key added to known_hosts."
+
+    - name: Set up SSH key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
+        chmod 600 $HOME/.ssh/id_rsa
+        eval $(ssh-agent -s)
+        ssh-add $HOME/.ssh/id_rsa
+
+    - name: Deploy to O2switch
+      run: |
+        ssh -v rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
         
