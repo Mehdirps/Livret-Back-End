@@ -44,11 +44,10 @@ jobs:
     - name: Start ssh-agent and add SSH key
       run: |
         eval "$(ssh-agent -s)"  # Start the SSH agent
-        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add ~/.ssh/id_rsa  # Add the private key with the passphrase
+        ssh-add ~/.ssh/id_rsa  # Add the private key
 
     - name: Deploy to O2switch
       env:
         PASSWORD: ${{ secrets.O2SWITCH_PASSWORD }}
       run: |
         sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev"
-        
