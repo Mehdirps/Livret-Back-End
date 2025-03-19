@@ -62,6 +62,9 @@ jobs:
           phpunit.xml
           tests/**
           vendor/**
+          ressource_old/**
+          storage/**
+          bootstrap/**
         
     # - name: Post-deployment commands (optional)
     #   if: false
