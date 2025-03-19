@@ -46,7 +46,7 @@ jobs:
     - name: Deploy via SFTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: 109.234.166.50
+        server: choucas.o2switch.net:2083
         username: rame5605
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftp
