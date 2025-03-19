@@ -79,15 +79,36 @@ jobs:
 
     - name: Set up SSH key
       run: |
-        # IMPORTANT: Your private key should NOT have a passphrase for CI
+        # Make sure the SSH key is properly formatted (base64 encoded keys might need decoding)
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
         chmod 600 $HOME/.ssh/id_rsa
-        # Start ssh-agent without prompting for passphrase
+        
+        # Start ssh-agent
         eval "$(ssh-agent -s)"
-        # Add key to agent without passphrase prompt
-        ssh-add -q $HOME/.ssh/id_rsa 2>/dev/null || (echo "Error: Your SSH key has a passphrase. Generate a key without passphrase for CI." && exit 1)
+        
+        # Add key to agent - since there's no passphrase or it's empty, this should work
+        ssh-add $HOME/.ssh/id_rsa
+        
+        # Verify the key was added correctly
+        ssh-add -l
+        
+        # Check the beginning of the key for debugging (don't display the whole key)
+        echo "Key starts with: $(head -n 1 $HOME/.ssh/id_rsa)"
 
     - name: Deploy to O2switch
       run: |
-        # Add StrictHostKeyChecking=no to avoid host key verification issues
-        ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 -v rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev" || echo "Connection failed: this may be due to IP restrictions on the server - verify that GitHub Actions IPs are allowed"
+        # Try alternative connection approaches
+        echo "Attempting SSH connection with various options..."
+        ssh -vvv -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 rame5605@109.234.166.50 "echo 'Connection successful'" || true
+        
+        # Now try the actual deployment command
+        ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev" || {
+          echo "==================================================="
+          echo "Deployment failed. Common causes include:"
+          echo "1. IP restrictions on the server (O2switch may block GitHub Actions IPs)"
+          echo "2. SSH key format issues (make sure it's in OpenSSH format)"
+          echo "3. Server configuration not accepting the key"
+          echo "Consider using SFTP deployment or asking O2switch support about CI/CD deployments"
+          echo "==================================================="
+          exit 1
+        }
