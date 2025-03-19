@@ -40,11 +40,19 @@ jobs:
 
     - name: Display GitHub Actions IP information
       run: |
-        echo "Displaying GitHub Actions IP ranges information:"
-        echo "Current runner IP: $(curl -s https://api.ipify.org)"
-        echo "GitHub Actions IP ranges:"
+        echo "== GitHub Actions IP Information for O2switch Whitelisting =="
+        RUNNER_IP=$(curl -s https://api.ipify.org)
+        echo "Current runner IP: $RUNNER_IP"
+        echo ""
+        echo "IMPORTANT: O2switch hosting requires SSH IP whitelisting"
+        echo "Please contact O2switch support and provide this IP range to whitelist"
+        echo "You may need to add these IPs to your 'SSH Security' or similar section in your O2switch control panel"
+        echo ""
+        echo "For documentation purposes, adding full GitHub Actions IP ranges:"
         curl -s https://api.github.com/meta | jq -r '.actions[]'
-        echo "These IPs need to be allowed in your O2switch SSH configuration"
+        
+        # Save the current IP for reference
+        echo "$RUNNER_IP" > runner_ip.txt
 
     - name: Create .ssh directory
       run: |
@@ -107,16 +115,27 @@ jobs:
       run: |
         # Try alternative connection approaches
         echo "Attempting SSH connection with various options..."
-        ssh -vvv -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 rame5605@109.234.166.50 "echo 'Connection successful'" || true
+        RUNNER_IP=$(cat runner_ip.txt)
+        echo "Attempting connection from GitHub Actions IP: $RUNNER_IP"
+        
+        # Try with different ports in case the default is filtered
+        for PORT in 22 2222; do
+          echo "Trying connection on port $PORT..."
+          ssh -vvv -o StrictHostKeyChecking=no -o BatchMode=yes -p $PORT -o ConnectTimeout=10 rame5605@109.234.166.50 "echo 'Connection successful'" || true
+        done
+        
+        # Provide O2switch specific guidance
+        echo "==== O2SWITCH DEPLOYMENT TROUBLESHOOTING ===="
+        echo "1. Log into O2switch control panel at https://client.o2switch.fr/"
+        echo "2. Navigate to SSH security settings (may be under 'Sécurité SSH')"
+        echo "3. Add the GitHub Actions runner IP to the whitelist"
+        echo "4. If SSH whitelisting is not possible, consider these alternatives:"
+        echo "   - Create a deployment key or script on your server"
+        echo "   - Use SFTP deployment instead of SSH commands"
+        echo "   - Set up a webhook deployment script on your server"
+        echo "===================================="
         
         # Now try the actual deployment command
         ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev" || {
-          echo "==================================================="
-          echo "Deployment failed. Common causes include:"
-          echo "1. IP restrictions on the server (O2switch may block GitHub Actions IPs)"
-          echo "2. SSH key format issues (make sure it's in OpenSSH format)"
-          echo "3. Server configuration not accepting the key"
-          echo "Consider using SFTP deployment or asking O2switch support about CI/CD deployments"
-          echo "==================================================="
           exit 1
         }
