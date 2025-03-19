@@ -38,6 +38,14 @@ jobs:
     #   run: |
     #     ping -c 4 109.234.166.50
 
+    - name: Display GitHub Actions IP information
+      run: |
+        echo "Displaying GitHub Actions IP ranges information:"
+        echo "Current runner IP: $(curl -s https://api.ipify.org)"
+        echo "GitHub Actions IP ranges:"
+        curl -s https://api.github.com/meta | jq -r '.actions[]'
+        echo "These IPs need to be allowed in your O2switch SSH configuration"
+
     - name: Create .ssh directory
       run: |
         mkdir -p $HOME/.ssh
