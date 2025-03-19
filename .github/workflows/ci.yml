@@ -62,7 +62,7 @@ jobs:
           phpunit.xml
           tests/**
           vendor/**
-          ressources_old/**
+          resources_old/**
           storage/**
           bootstrap/**
         
