@@ -30,112 +30,46 @@ jobs:
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
 
-    # - name: Run PHPStan
+    # - name: Display GitHub Actions IP information
     #   run: |
-    #     vendor/bin/phpstan analyse app --level=max
+    #     echo "== GitHub Actions IP Information for O2switch Whitelisting =="
+    #     RUNNER_IP=$(curl -s https://api.ipify.org)
+    #     echo "Current runner IP: $RUNNER_IP"
+    #     echo ""
+    #     echo "For SFTP deployment, IP whitelisting may still be required in some cases"
+    #     echo ""
+    #     echo "Current runner IP: $RUNNER_IP"
+        
+    #     # Save the current IP for reference
+    #     echo "$RUNNER_IP" > runner_ip.txt
 
-    # - name: Check connectivity
-    #   run: |
-    #     ping -c 4 109.234.166.50
-
-    - name: Display GitHub Actions IP information
-      run: |
-        echo "== GitHub Actions IP Information for O2switch Whitelisting =="
-        RUNNER_IP=$(curl -s https://api.ipify.org)
-        echo "Current runner IP: $RUNNER_IP"
-        echo ""
-        echo "IMPORTANT: O2switch hosting requires SSH IP whitelisting"
-        echo "Please contact O2switch support and provide this IP range to whitelist"
-        echo "You may need to add these IPs to your 'SSH Security' or similar section in your O2switch control panel"
-        echo ""
-        echo "For documentation purposes, adding full GitHub Actions IP ranges:"
-        curl -s https://api.github.com/meta | jq -r '.actions[]'
+    - name: Deploy via SFTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: 109.234.166.50
+        username: rame5605
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: sftp
+        port: 22 
+        local-dir: ./
+        server-dir: /home/rame5605/api.herbeginfos.fr/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          README.md
+          .env.example
+          phpunit.xml
+          tests/**
         
-        # Save the current IP for reference
-        echo "$RUNNER_IP" > runner_ip.txt
-
-    - name: Create .ssh directory
-      run: |
-        mkdir -p $HOME/.ssh
-        echo "Directory created: $HOME/.ssh"
-
-    - name: Check host connectivity
-      continue-on-error: true
-      run: |
-        echo "Checking connectivity to deployment server..."
-        if ping -c 2 -W 5 109.234.166.50 &>/dev/null; then
-          echo "Host is reachable via ping"
-        else
-          echo "Warning: Host not responding to ping (this might be normal if ICMP is blocked)"
-        fi
-        
-        if nc -z -w 5 109.234.166.50 22 &>/dev/null; then
-          echo "SSH port is open and accessible"
-        else
-          echo "Warning: SSH port seems closed or filtered"
-        fi
-
-    - name: Add SSH host to known_hosts
-      continue-on-error: true
-      run: |
-        echo "Attempting to scan SSH host key..."
-        for i in {1..3}; do
-          echo "Attempt $i to scan host key..."
-          if ssh-keyscan -v -T 10 -H 109.234.166.50 >> $HOME/.ssh/known_hosts 2>&1; then
-            echo "SSH host key successfully added to known_hosts."
-            exit 0
-          else
-            echo "Attempt $i failed. Waiting before retry..."
-            sleep 5
-          fi
-        done
-        echo "Failed to scan host key after multiple attempts. Continuing anyway..."
-        # Manually adding a placeholder to avoid host key verification in the deployment step
-        echo "109.234.166.50 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA..." >> $HOME/.ssh/known_hosts
-
-    - name: Set up SSH key
-      run: |
-        # Make sure the SSH key is properly formatted (base64 encoded keys might need decoding)
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
-        chmod 600 $HOME/.ssh/id_rsa
-        
-        # Start ssh-agent
-        eval "$(ssh-agent -s)"
-        
-        # Add key to agent - since there's no passphrase or it's empty, this should work
-        ssh-add $HOME/.ssh/id_rsa
-        
-        # Verify the key was added correctly
-        ssh-add -l
-        
-        # Check the beginning of the key for debugging (don't display the whole key)
-        echo "Key starts with: $(head -n 1 $HOME/.ssh/id_rsa)"
-
-    - name: Deploy to O2switch
-      run: |
-        # Try alternative connection approaches
-        echo "Attempting SSH connection with various options..."
-        RUNNER_IP=$(cat runner_ip.txt)
-        echo "Attempting connection from GitHub Actions IP: $RUNNER_IP"
-        
-        # Try with different ports in case the default is filtered
-        for PORT in 22 2222; do
-          echo "Trying connection on port $PORT..."
-          ssh -vvv -o StrictHostKeyChecking=no -o BatchMode=yes -p $PORT -o ConnectTimeout=10 rame5605@109.234.166.50 "echo 'Connection successful'" || true
-        done
-        
-        # Provide O2switch specific guidance
-        echo "==== O2SWITCH DEPLOYMENT TROUBLESHOOTING ===="
-        echo "1. Log into O2switch control panel at https://client.o2switch.fr/"
-        echo "2. Navigate to SSH security settings (may be under 'Sécurité SSH')"
-        echo "3. Add the GitHub Actions runner IP to the whitelist"
-        echo "4. If SSH whitelisting is not possible, consider these alternatives:"
-        echo "   - Create a deployment key or script on your server"
-        echo "   - Use SFTP deployment instead of SSH commands"
-        echo "   - Set up a webhook deployment script on your server"
-        echo "===================================="
-        
-        # Now try the actual deployment command
-        ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=10 rame5605@109.234.166.50 "cd /home/rame5605/api.herbeginfos.fr && git pull origin main && composer install --no-dev" || {
-          exit 1
-        }
+    - name: Post-deployment commands (optional)
+      if: false
+      uses: appleboy/ssh-action@master
+      with:
+        host: 109.234.166.50
+        username: rame5605
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /home/rame5605/api.herbeginfos.fr
+          composer install --no-dev
+          php artisan migrate --force
