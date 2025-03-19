@@ -60,6 +60,7 @@ jobs:
           app/Providers/**
           database/**
           TODO.md
+          app/**
         
     # - name: Post-deployment commands (optional)
     #   if: false
