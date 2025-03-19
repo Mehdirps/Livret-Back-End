@@ -39,7 +39,7 @@ jobs:
         protocol: ftp
         port: 21
         local-dir: ./
-        server-dir: /home/rame5605/api.herbeginfos.fr/
+        server-dir: /api.herbeginfos.fr/
         exclude: |
           **/.git*
           **/.git*/**
