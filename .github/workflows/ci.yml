@@ -46,11 +46,11 @@ jobs:
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: choucas.o2switch.net
+        server: choucas.o2switch.netchoucas.o2switch.net
         username: rame5605
         password: ${{ secrets.FTP_PASSWORD }}
         protocol: ftp
-        port: 2083 
+        port: 21
         local-dir: ./
         server-dir: /home/rame5605/api.herbeginfos.fr/
         exclude: |
