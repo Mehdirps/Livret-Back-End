@@ -63,6 +63,7 @@ jobs:
           app/Console/**
           app/Exceptions/**
           app/Providers/**
+          app/**
         
     # - name: Post-deployment commands (optional)
     #   if: false
