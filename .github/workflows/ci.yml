@@ -34,9 +34,9 @@ jobs:
     #   run: |
     #     vendor/bin/phpstan analyse app --level=max
 
-    - name: Check connectivity
-      run: |
-        ping -c 4 109.234.166.50
+    # - name: Check connectivity
+    #   run: |
+    #     ping -c 4 109.234.166.50
 
     - name: Display GitHub Actions IP information
       run: |
