@@ -49,7 +49,7 @@ jobs:
         server: 109.234.166.50
         username: rame5605
         password: ${{ secrets.FTP_PASSWORD }}
-        protocol: sftp
+        protocol: ftp
         port: 22 
         local-dir: ./
         server-dir: /home/rame5605/api.herbeginfos.fr/
@@ -62,14 +62,14 @@ jobs:
           phpunit.xml
           tests/**
         
-    - name: Post-deployment commands (optional)
-      if: false
-      uses: appleboy/ssh-action@master
-      with:
-        host: 109.234.166.50
-        username: rame5605
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /home/rame5605/api.herbeginfos.fr
-          composer install --no-dev
-          php artisan migrate --force
+    # - name: Post-deployment commands (optional)
+    #   if: false
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: 109.234.166.50
+    #     username: rame5605
+    #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #     script: |
+    #       cd /home/rame5605/api.herbeginfos.fr
+    #       composer install --no-dev
+    #       php artisan migrate --force
