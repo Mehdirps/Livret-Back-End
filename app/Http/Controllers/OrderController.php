@@ -47,7 +47,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Aucune commande trouvée']);
         }
 
-        return response()->json(['orders' => $orders]);
+        return response()->json(['orders' => $orders], 200);
     }
 
     /**

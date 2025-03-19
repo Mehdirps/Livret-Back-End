@@ -62,12 +62,7 @@ jobs:
           .env.testing
           .phpunit.result.cache
           app/Providers/**
-          database/**
           TODO.md
-          app/Console/**
-          app/Exceptions/**
-          app/Providers/**
-          app/**
           .ftp-deploy-sync-state.json
         
     # - name: Post-deployment commands (optional)
