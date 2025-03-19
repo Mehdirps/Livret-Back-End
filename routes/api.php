@@ -17,7 +17,7 @@ Route::middleware('api')->group(function () {
 
     Route::get('/', function () {
         return response()->json([
-            'message' => 'Bienvenu sur l\'API de l\'application Livret via ftp github encore une fois',
+            'message' => 'Bienvenu sur l\'API de l\'application Livret via ftp github juste les modifs',
             'status' => 200
         ]);
     });

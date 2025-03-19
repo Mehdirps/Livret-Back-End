@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Get all history for file tracking
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
@@ -40,6 +42,8 @@ jobs:
         port: 21
         local-dir: ./
         server-dir: /api.herbeginfos.fr/
+        state-name: .ftp-deploy-sync-state.json
+        dangerous-clean-slate: false
         exclude: |
           **/.git*
           **/.git*/**
@@ -64,6 +68,7 @@ jobs:
           app/Exceptions/**
           app/Providers/**
           app/**
+          .ftp-deploy-sync-state.json
         
     # - name: Post-deployment commands (optional)
     #   if: false
