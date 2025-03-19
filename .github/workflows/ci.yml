@@ -30,19 +30,6 @@ jobs:
       run: |
         vendor/bin/phpunit --configuration phpunit.xml
 
-    # - name: Display GitHub Actions IP information
-    #   run: |
-    #     echo "== GitHub Actions IP Information for O2switch Whitelisting =="
-    #     RUNNER_IP=$(curl -s https://api.ipify.org)
-    #     echo "Current runner IP: $RUNNER_IP"
-    #     echo ""
-    #     echo "For SFTP deployment, IP whitelisting may still be required in some cases"
-    #     echo ""
-    #     echo "Current runner IP: $RUNNER_IP"
-        
-    #     # Save the current IP for reference
-    #     echo "$RUNNER_IP" > runner_ip.txt
-
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -65,6 +52,14 @@ jobs:
           resources_old/**
           storage/**
           bootstrap/**
+          config/**
+          .DS_Store
+          .editorconfig
+          .env.testing
+          .phpunit.result.cache
+          app/Providers/**
+          database/**
+          TODO.md
         
     # - name: Post-deployment commands (optional)
     #   if: false
