@@ -16,7 +16,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # Get all history for file tracking
+        fetch-depth: 2  # Only need 2 commits for diff comparison
 
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
@@ -64,6 +64,7 @@ jobs:
           app/Providers/**
           TODO.md
           .ftp-deploy-sync-state.json
+        log-level: verbose
         
     # - name: Post-deployment commands (optional)
     #   if: false

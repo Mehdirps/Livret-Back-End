@@ -17,7 +17,7 @@ Route::middleware('api')->group(function () {
 
     Route::get('/', function () {
         return response()->json([
-            'message' => 'Bienvenue sur l\'API de l\'application',
+            'message' => 'Bienvenue sur l\'API de l\'application Heberginfos !',
             'status' => 200
         ]);
     });
