@@ -61,6 +61,7 @@ jobs:
           .env.example
           phpunit.xml
           tests/**
+          vendor/**
         
     # - name: Post-deployment commands (optional)
     #   if: false
