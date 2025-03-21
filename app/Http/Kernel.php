@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'auth.jwt' => \App\Http\Middleware\JwtMiddleware::class,
+        'log.request.time' => \App\Http\Middleware\LogRequestTime::class,
     ];
 }

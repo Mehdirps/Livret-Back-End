@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('api')->group(function () {
+Route::middleware(['api', 'log.request.time'])->group(function () {
 
     Route::get('/', function () {
         return response()->json([
