@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Log;
 
 class Handler extends ExceptionHandler
 {
@@ -38,12 +39,28 @@ class Handler extends ExceptionHandler
      * @throws Throwable
      */
 
-    public function render($request, Throwable $e){
+    public function render($request, Throwable $e)
+    {
         if ($e instanceof \Illuminate\Validation\ValidationException) {
             return response()->json([
                 'error' => $e->validator->errors()->first()
             ], 400);
         }
         return parent::render($request, $e);
+    }
+
+    public function report(Throwable $exception)
+    {
+        if ($this->shouldReport($exception)) {
+            Log::error('Exception caught', [
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'url' => request()->fullUrl(),
+                'method' => request()->method(),
+            ]);
+        }
+
+        parent::report($exception);
     }
 }

@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Planifier l'analyse des logs tous les lundis à 8h
+        $schedule->command('logs:analyze')->weeklyOn(1, '08:00'); 
     }
 
     /**
