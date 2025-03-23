@@ -517,9 +517,19 @@ class LivretController extends Controller
 
     public function getAllLivrets()
     {
-        $livrets = Livret::all();
+        $livrets = Livret::where(function($query) {
+            $query->has('wifi')
+                ->orHas('digicode')
+                ->orHas('endInfos')
+                ->orHas('homeInfos')
+                ->orHas('utilsPhone')
+                ->orHas('startInfos')
+                ->orHas('utilsInfos')
+                ->orHas('placeGroups')
+                ->orHas('NearbyPlaces');
+        })->get();
 
-        if(!$livrets) {
+        if($livrets->isEmpty()) {
             return response()->json(['error' => 'Aucun livret trouvé']);
         }
 
