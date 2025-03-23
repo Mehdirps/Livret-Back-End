@@ -22,7 +22,9 @@ Route::middleware(['api', 'log.request.time'])->group(function () {
         ]);
     });
 
+    /* Livret */
     Route::get('/livret/{slug}/{id}', [App\Http\Controllers\LivretController::class, 'show']);
+    Route::get('/livrets', [App\Http\Controllers\LivretController::class, 'getAllLivrets']);
 
     /* Suggestions */
     Route::post('/suggestions', [App\Http\Controllers\SuggestionController::class, 'store']);

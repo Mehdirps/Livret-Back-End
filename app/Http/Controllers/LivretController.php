@@ -514,4 +514,17 @@ class LivretController extends Controller
             'modules' => $modules,
         ]);
     }
+
+    public function getAllLivrets()
+    {
+        $livrets = Livret::all();
+
+        if(!$livrets) {
+            return response()->json(['error' => 'Aucun livret trouvé']);
+        }
+
+        return response()->json([
+            'livrets' => $livrets,
+        ]);
+    }
 }
