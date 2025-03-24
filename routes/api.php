@@ -44,6 +44,7 @@ Route::middleware(['api', 'log.request.time'])->group(function () {
         Route::post('register', [App\Http\Controllers\AuthController::class, 'doRegister']);
         Route::get('verify_email/{email}', [App\Http\Controllers\AuthController::class, 'verify']);
         Route::get('logout', [App\Http\Controllers\AuthController::class, 'doLogout']);
+        Route::delete('deleteAccount/{token}', [App\Http\Controllers\AuthController::class, 'deleteAccount']);
     });
 
     /* Dashboard */

@@ -354,28 +354,35 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function deleteAccount()
+    public function deleteAccount($token)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        
-        $livret = $user->livret;
+        try {
+            $user = JWTAuth::setToken($token)->authenticate();
+            if (!$user) {
+                return response()->json(['error' => 'Utilisateur non trouvé'], 404);
+            }
+            
+            $livret = $user->livret;
 
-        if ($livret) {
-            $livret->wifi()->delete();
-            $livret->digicode()->delete();
-            $livret->endInfos()->delete();
-            $livret->homeInfos()->delete();
-            $livret->utilsPhone()->delete();
-            $livret->startInfos()->delete();
-            $livret->utilsInfos()->delete();
-            $livret->placeGroups()->delete();
-            $livret->NearbyPlaces()->delete();
-            $livret->inventories()->delete();
-            $livret->suggestions()->delete();
+            if ($livret) {
+                $livret->wifi()->delete();
+                $livret->digicode()->delete();
+                $livret->endInfos()->delete();
+                $livret->homeInfos()->delete();
+                $livret->utilsPhone()->delete();
+                $livret->startInfos()->delete();
+                $livret->utilsInfos()->delete();
+                $livret->placeGroups()->delete();
+                $livret->NearbyPlaces()->delete();
+                $livret->inventories()->delete();
+                $livret->suggestions()->delete();
+            }
+            
+            $livret->delete();
+            $user->delete();
+            return response()->json(['message' => 'Votre compte a été supprimé avec succès']);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Jeton de réinitialisation invalide, veuillez réessayer et si le problème persiste, déconnectez-vous et reconnectez-vous.'], 401);
         }
-        
-        $livret->delete();
-        $user->delete();
-        return response()->json(['message' => 'Votre compte a été supprimé avec succès']);
     }
 }
