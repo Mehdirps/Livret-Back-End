@@ -334,4 +334,48 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Votre mot de passe a été mis à jour avec succès']);
     }
+
+    /**
+     * Supprime le compte de l'utilisateur et toutes ses données associées.
+     *
+     * @OA\Delete(
+     *     path="/api/auth/delete-account",
+     *     tags={"Auth"},
+     *     summary="Suppression du compte",
+     *     description="Supprime définitivement le compte de l'utilisateur et toutes les données associées.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Compte supprimé avec succès",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string", example="Votre compte a été supprimé avec succès"))
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé"
+     *     )
+     * )
+     */
+    public function deleteAccount()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        
+        $livret = $user->livret;
+
+        if ($livret) {
+            $livret->wifi()->delete();
+            $livret->digicode()->delete();
+            $livret->endInfos()->delete();
+            $livret->homeInfos()->delete();
+            $livret->utilsPhone()->delete();
+            $livret->startInfos()->delete();
+            $livret->utilsInfos()->delete();
+            $livret->placeGroups()->delete();
+            $livret->NearbyPlaces()->delete();
+            $livret->inventories()->delete();
+            $livret->suggestions()->delete();
+        }
+        
+        $livret->delete();
+        $user->delete();
+        return response()->json(['message' => 'Votre compte a été supprimé avec succès']);
+    }
 }
