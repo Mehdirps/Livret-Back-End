@@ -16,6 +16,7 @@ use App\Models\Livret;
 use App\Models\LivretView;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -103,7 +104,8 @@ class LivretController extends Controller
 
         Livret::create([
             'livret_name' => $validatedData['livret_name'],
-            'slug' => \Str::slug($validatedData['livret_name']),
+            'slug' => Str::slug($validatedData['livret_name']),
+            'establishment_type' => $validatedData['establishment_type'],
             'establishment_type' => $validatedData['establishment_type'],
             'establishment_name' => $validatedData['establishment_name'],
             'establishment_address' => $validatedData['establishment_address'],
@@ -322,9 +324,9 @@ class LivretController extends Controller
         if (!$livret) {
             return response()->json(['error' => 'Livret introuvable']);
         }
-
         $livret->livret_name = $validatedData['livret_name'];
-        $livret->slug = \Str::slug($validatedData['livret_name']);
+        $livret->slug = Str::slug($validatedData['livret_name']);
+        $livret->description = $validatedData['description'];
         $livret->description = $validatedData['description'];
         $livret->establishment_type = $validatedData['establishment_type'];
         $livret->establishment_name = $validatedData['establishment_name'];
