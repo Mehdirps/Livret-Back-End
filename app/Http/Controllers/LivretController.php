@@ -521,6 +521,24 @@ class LivretController extends Controller
             ];
         }
 
+        if($livret->placeGroups) {
+            $modules[] = [
+                'type' => ['name' => 'placeGroups', 'title' => 'Groupes de lieux'],
+                'icon' => 'bi bi-geo-alt',
+                'data' => $livret->placeGroups,
+                'order' => null
+            ];
+        }
+
+        if ($livret->NearbyPlaces) {
+            $modules[] = [
+                'type' => ['name' => 'NearbyPlaces', 'title' => 'Lieux à proximité'],
+                'icon' => 'bi bi-geo-alt',
+                'data' => $livret->NearbyPlaces,
+                'order' => $livret->NearbyPlaces[0]->order ?? null
+            ];
+        }
+
         return response()->json([
             'modules' => $modules,
         ]);
