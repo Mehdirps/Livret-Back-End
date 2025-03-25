@@ -31,8 +31,8 @@ class ModuleNearbyPlaceController extends Controller
             return response()->json(['error' => 'Livret introuvable']);
         }
 
-        if(!$request->placeName || !$request->placeAddress || !$request->placePhone || !$request->placeDescription || !$request->placeGroup || !$request->travelTime){
-            return response()->json(['error' => 'Veuillez remplir tous les champs']);
+        if(!$request->placeName || !$request->placeGroup){
+            return response()->json(['error' => 'Veuillez remplir les champs obligatoires, nom du lieu et groupe de lieu']);
         }
 
         $nearbyPlace = new NearbyPlace();
