@@ -37,11 +37,11 @@ class ModuleNearbyPlaceController extends Controller
 
         $nearbyPlace = new NearbyPlace();
         $nearbyPlace->name = $request->placeName;
-        $nearbyPlace->address = $request->placeAddress;
-        $nearbyPlace->phone = $request->placePhone;
-        $nearbyPlace->description = $request->placeDescription;
+        $nearbyPlace->address = $request->placeAddress ?? '';
+        $nearbyPlace->phone = $request->placePhone ?? '';
+        $nearbyPlace->description = $request->placeDescription ?? '';
         $nearbyPlace->place_group_id = $request->placeGroup;
-        $nearbyPlace->travel_time = $request->travelTime;
+        $nearbyPlace->travel_time = $request->travelTime ?? '';
         $nearbyPlace->livret_id = $livret->id;
         $nearbyPlace->save();
 
