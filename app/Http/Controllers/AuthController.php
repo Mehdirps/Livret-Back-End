@@ -389,4 +389,94 @@ class AuthController extends Controller
             return response()->json(['error' => 'Jeton de réinitialisation invalide, veuillez réessayer et si le problème persiste, déconnectez-vous et reconnectez-vous.'], 401);
         }
     }
+
+    /**
+     * Génère un token de réinitialisation de mot de passe.
+     *
+     * @OA\Post(
+     *     path="/api/auth/forgot-password",
+     *     tags={"Auth"},
+     *     summary="Demande de réinitialisation de mot de passe",
+     *     description="Envoie un email avec un lien de réinitialisation de mot de passe.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Email envoyé avec succès",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string"))
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Utilisateur non trouvé"
+     *     )
+     * )
+     */
+    public function generateResetPasswordToken(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Aucun utilisateur trouvé avec cette adresse e-mail'], 404);
+        }
+
+        $token = \Illuminate\Support\Str::random(64);
+        
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            [
+                'token' => \Illuminate\Support\Facades\Hash::make($token),
+                'created_at' => now()
+            ]
+        );
+
+        $resetLink = env('FRONTEND_URL', 'https://herbeginfos.fr') . '/reset-password?email=' . $user->email . '&token=' . $token;
+        
+        $emailBody = '
+            <h1>Réinitialisation de votre mot de passe</h1>
+            <p>Vous recevez cet email car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.</p>
+            <p>Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+            <p><a href="' . $resetLink . '">Réinitialiser mon mot de passe</a></p>
+            <p>Ce lien de réinitialisation expirera dans 60 minutes.</p>
+            <p>Si vous n\'avez pas demandé de réinitialisation de mot de passe, aucune action n\'est requise.</p>
+            <p>Cordialement,<br>L\'équipe HebergInfos</p>';
+
+        $mail = new Email();
+        $mail->sendEmail($user->email, $emailBody, 'Réinitialisation de votre mot de passe');
+
+        return response()->json(['message' => 'Un email de réinitialisation a été envoyé à votre adresse e-mail']);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Aucun utilisateur trouvé avec cette adresse e-mail'], 404);
+        }
+
+        $tokenData = \Illuminate\Support\Facades\DB::table('password_reset_tokens')->where('email', $request->email)->first();
+
+        if (!$tokenData || !\Illuminate\Support\Facades\Hash::check($request->token, $tokenData->token)) {
+            return response()->json(['error' => 'Jeton de réinitialisation invalide ou expiré'], 400);
+        }
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        \Illuminate\Support\Facades\DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return response()->json(['message' => 'Votre mot de passe a été réinitialisé avec succès']);
+    }
 }
