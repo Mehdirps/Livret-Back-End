@@ -30,7 +30,7 @@ class Email
             $mail->isHTML(true);
             $mail->Username = env('MAIL_USERNAME');
             $mail->Password = env('MAIL_PASSWORD');
-            $mail->SetFrom(env('MAIL_FROM_ADDRESS'), "Livret d'accueil");
+            $mail->SetFrom(env('MAIL_FROM_ADDRESS'), "Heberginfos");
             $mail->Subject = $subject;
             $mail->Body = $body;
             $mail->CharSet = 'UTF-8';
