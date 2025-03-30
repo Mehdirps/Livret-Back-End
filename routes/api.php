@@ -45,6 +45,8 @@ Route::middleware(['api', 'log.request.time'])->group(function () {
         Route::get('verify_email/{email}', [App\Http\Controllers\AuthController::class, 'verify']);
         Route::get('logout', [App\Http\Controllers\AuthController::class, 'doLogout']);
         Route::delete('deleteAccount/{token}', [App\Http\Controllers\AuthController::class, 'deleteAccount']);
+        Route::post('generate_reset_password', [App\Http\Controllers\AuthController::class, 'generateResetPasswordToken']);
+        Route::post('reset_password', [App\Http\Controllers\AuthController::class, 'resetPassword']);
     });
 
     /* Dashboard */
