@@ -457,7 +457,8 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'token' => 'required',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:8',
+            'confirmPassword' => 'required|same:password',
         ]);
 
         $user = User::where('email', $request->email)->first();
