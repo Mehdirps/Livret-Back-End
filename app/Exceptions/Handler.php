@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2025 Mehdi Raposo
  * Ce fichier fait partie du projet Heberginfos.
@@ -14,6 +15,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 class Handler extends ExceptionHandler
 {
@@ -47,15 +49,16 @@ class Handler extends ExceptionHandler
      *
      * @throws Throwable
      */
-
-    public function render($request, Throwable $e)
+    public function render($request, Throwable $exception)
     {
-        if ($e instanceof \Illuminate\Validation\ValidationException) {
+        if ($exception instanceof ThrottleRequestsException) {
             return response()->json([
-                'error' => $e->validator->errors()->first()
-            ], 400);
+                'message' => 'Trop de requêtes. Réessayez dans quelques secondes.',
+                'retry_after' => $exception->getHeaders()['Retry-After'] ?? 60, 
+            ], 429);
         }
-        return parent::render($request, $e);
+
+        return parent::render($request, $exception);
     }
 
     public function report(Throwable $exception)
