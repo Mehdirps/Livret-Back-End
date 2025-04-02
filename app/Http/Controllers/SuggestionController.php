@@ -91,7 +91,7 @@ class SuggestionController extends Controller
         // Récupérer les suggestions du livret
         $suggestions = $livret->suggestions()->get();
 
-        if (!$suggestions) {
+        if ($suggestions->isEmpty()) {
             return response()->json(['error' => 'Aucune suggestion trouvée']);
         }
 
